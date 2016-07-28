@@ -27,7 +27,9 @@ class User extends Model
 		'employer',
 		'photo',
 		'extra_note',
-		'comm_id'
+		'comm_id',
+		'key',
+		'is_active'
 
 	];
 
@@ -37,7 +39,7 @@ class User extends Model
 	 * @param  array $post_data
 	 * @return void
 	 */
-	public static function store($post_data)
+	public static function store ($post_data)
 	{
 		try
 		{
@@ -58,9 +60,7 @@ class User extends Model
 				'comm_id' => $post_data['comm_val']
 				]);
 
-			$pic_name = $user->id . '_' . $post_data['pic'];
-
-			User::find($user->id)->update(['photo'=>$pic_name]);
+			User::find($user->id)->update(['key' => Hash::make( $user->id . $post_data['password'])]);
 			return $user->id;
 		}
 		catch(\Exception $e)
@@ -70,5 +70,45 @@ class User extends Model
 		}
 
 		Address::create();
+	}
+
+	/**
+	 * To upload the profile image
+	 *
+	 * @param  Request  $request
+	 * @param  integer  $id
+	*/
+	public static function imageUpload($id, $image_name)
+	{
+		User::find($id)->update(['photo' => $image_name]);
+	}
+
+	/**
+	 * To delete data from users tabel.
+	 *
+	 * @param  array $post_data
+	 * @return void
+	 */
+	public static function delete_record ($id)
+	{
+		User::destroy($id);
+	}
+
+	/**
+	 * To verify though mail
+	 *
+	 * @param  string  $key
+	*/
+	public static function verify_link ($key)
+	{
+		try
+		{
+			$user = User::where('key', $key)->first();
+			User::find($user->id)->update(['is_active' => 1]);
+		}
+		catch(\Exception $e)
+		{
+			Log::error($e);
+		}
 	}
 }

@@ -55,11 +55,24 @@ class Address extends Model
 					]
 
 				]);
+			return 1;
 		}
 		catch(\Exception $e)
 		{
+			return 0;
 			Log::error($e);
 		}
+	}
+
+	/**
+	 * To delete data from address tabel.
+	 *
+	 * @param  array $post_data
+	 * @return void
+	 */
+	public static function delete_record ($id)
+	{
+		Address::destroy($id);
 	}
 
 }

@@ -29,19 +29,19 @@ Route::get('details', function () {
 
 Route::get('register', 
 	['as' => 'register',
-	'uses' => 'RegistrationController@register']);
+	'uses' => 'AuthController@register']);
 
 Route::post('do-register', 
 	['as' => 'do-register',
-	'uses' => 'RegistrationController@doRegister']);
+	'uses' => 'AuthController@doRegister']);
 
 Route::get('login', 
 	['as' => 'login',
-	'uses' => 'LoginController@login']);
+	'uses' => 'AuthController@login']);
 
 Route::post('do-login', 
 	['as' => 'do-login',
-	'uses' => 'LoginController@doLogin']);
+	'uses' => 'AuthController@doLogin']);
 
 // Route::get('dashboard', 
 // 	['as' => 'dashboard',
@@ -50,6 +50,11 @@ Route::post('do-login',
 Route::get('logout', 
 	['as' => 'logout',
 	'uses' => 'DashBoardController@logout']);
+
+Route::get('login/verify/key/{key_val}', 
+	['uses' => 'AuthController@emailVerification']);
+
+
 
 Route::get('calculator/{operation}/{val1?}/{val2?}', function ($operation, $val1='', $val2='')
 	{
