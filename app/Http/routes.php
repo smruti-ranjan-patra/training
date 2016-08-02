@@ -33,7 +33,10 @@ Route::group(['middleware' => 'user_access'], function ()
 	Route::get('view', 'EmployeeController@view');
 	Route::get('add_user', 'AuthController@register');
 
+
 });
+
+Route::get('twitter', 'EmployeeController@twitter');
 
 
 Route::get('register', 

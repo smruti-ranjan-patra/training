@@ -31,7 +31,11 @@ class DatatablesController extends Controller
 													return ++$serial;
 												})
 											->edit_column('prefix', '{{ucfirst($prefix)}}')
-											->edit_column('first_name', '{{ucfirst($first_name)}} {{ucfirst($middle_name)}} {{ucfirst($last_name)}}')
+											// ->edit_column('first_name', '{{ucfirst($first_name)}} {{ucfirst($middle_name)}} {{ucfirst($last_name)}}')
+											->edit_column('first_name', function ($query)
+											{
+												return '<div class="full_name" data_userid="' . $query->id . '">' . '<a href="" onClick="return false;">' . ucfirst($query->first_name) . ' ' . ucfirst($query->middle_name) . ' ' . ucfirst($query->last_name) . '</a></div>';
+											})
 											->edit_column('email', '{{$email}}')
 											->edit_column('gender', '{{ucfirst($gender)}}')
 											->edit_column('dob', '{{ date("jS M Y", strtotime($dob))}}')

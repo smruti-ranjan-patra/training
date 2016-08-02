@@ -23,8 +23,39 @@
 			</thead>
 	</table>
 
-	<!-- Modal -->
+	<!-- Details Modal -->
 	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title">Personal Details :-</h3>
+				</div>
+				<div class="modal-body">
+				<div id="profile_pic"></div>
+				<strong style="color:blue">Name : </strong><br>
+				<div id="name"></div><br>
+				<strong style="color:blue">Employment : </strong><br>
+				<div id="employment"></div><br>
+				<strong style="color:blue">Employer : </strong><br>
+				<div id="employer"></div><br>
+				<strong style="color:blue">Residence Address : </strong><br>
+				<div id="res_add"></div><br>
+				<strong style="color:blue">Office Address : </strong><br>
+				<div id="off_add"></div><br>
+				<strong style="color:blue">Medium of Communication : </strong><br>
+				<div id="comm_medium"></div><br>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Twitter Modal -->
+	<div class="modal fade" id="twitter_modal" role="dialog">
 		<div class="modal-dialog">
 			<!-- Modal content-->
 			<div class="modal-content">
@@ -32,20 +63,16 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title"></h4>
 				</div>
+				<div id="tweet_selector">
+					<select>
+						<option value="1" selected>1</option>
+						<option value="2">2</option>
+						<option value="4">4</option>
+						<option value="6">6</option>
+						<option value="8">8</option>
+					</select>
+				</div>
 				<div class="modal-body">
-				<div id="profile_pic"></div>
-				<strong>Name : </strong><br>
-				<div id="name"></div><br>
-				<strong>Employment : </strong><br>
-				<div id="employment"></div><br>
-				<strong>Employer : </strong><br>
-				<div id="employer"></div><br>
-				<strong>Residence Address : </strong><br>
-				<div id="res_add"></div><br>
-				<strong>Office Address : </strong><br>
-				<div id="off_add"></div><br>
-				<strong>Medium of Communication : </strong><br>
-				<div id="comm_medium"></div><br>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -70,6 +97,7 @@
 	<script>
 		$(function()
 		{
+			var user_id;
 			var t = $('#users-table').DataTable(
 			{
 				processing: true,
@@ -112,10 +140,86 @@
 						$("#res_add").html(response.res_add);
 						$("#off_add").html(response.off_add);
 						$("#comm_medium").html(response.comm_medium);
-						$("#myModal").modal({backdrop: 'static', keyboard: false, show: true});						
+						$("#myModal").modal({backdrop: 'static', keyboard: false, show: true});
 					}	
 				});
 			});
+			$(document).on('change', 'select', function()
+			{
+				var num = $(this).val();
+				get_tweets(user_id, num);
+			});
+
+			// Click event for Tweets
+			$(document).on('click', '.full_name', function()
+			{
+				$("select").val("1");
+				user_id = $(this).attr('data_userid');
+				console.log(user_id);
+				get_tweets(user_id);
+			});
+
+			/**
+			 * To display the tweets
+			 *
+			 * @access public
+			 *
+			 * @param  integer $id
+			 * @param  integer $num_tweets
+			 * @return void
+			 */
+			function get_tweets(id, num_tweets = 1)
+			{
+				$('#tweet_selector').hide();
+				tweets_display = '<div style="text-align: center"><img src="././images/loading.gif" style="width:80px;height:80px;"></div>';
+				$('.modal-body').html(tweets_display);
+				$('.modal-title').html('Loading...');
+
+				$.ajax(
+				{
+					url: '{!! url('twitter') !!}' + '?id=' + id + '&num_tweets=' + num_tweets,
+					data:
+					{
+						id : id,
+						num_tweets : num_tweets
+					},
+					type: 'GET',
+					dataType : 'JSON',
+					success: function(tweet_data)
+					{
+						if(tweet_data.err_val == 1)
+						{
+							$('.modal-title').html('Oops !!!');
+							$('#tweet_selector').hide();
+							$('.modal-body').html(tweet_data.err_msg);
+						}
+						else if (tweet_data.err_val == 2)
+						{
+							$('.modal-title').html('Oops !!!');
+							$('#tweet_selector').hide();
+							$('.modal-body').html(tweet_data.err_msg);
+						}
+						else
+						{
+							$('#tweet_selector').show();
+							var user = 'Tweets of ' + tweet_data.user_name;
+							$('.modal-title').html(user);
+							var tweet_body = '';
+							tweet_body += '<div style="text-align: center"><img src="' + tweet_data.image + '" style="border-radius:20%;width:100px;height:100px;"></div>';
+
+							for(i in tweet_data.tweet_results)
+							{
+								tweet_body += '<hr><p>' + tweet_data.tweet_results[i] + '</p>';
+							}
+
+							tweets_display = tweet_body;
+							$('.modal-body').html(tweets_display);
+						}
+						$("#twitter_modal").modal({backdrop: 'static', keyboard: false, show: true});
+					}
+
+				});
+			}
 
 		});
 	</script>

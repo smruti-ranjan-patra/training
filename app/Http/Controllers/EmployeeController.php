@@ -7,6 +7,8 @@ use App\Http\Requests;
 use App\Models\User;
 use App\Models\CommunicationMedium;
 use Auth;
+use Twitter;
+use Log;
 
 class EmployeeController extends Controller
 {
@@ -14,10 +16,11 @@ class EmployeeController extends Controller
 	 * Handle Employee Edit
 	 *
 	 * @param  Request  $request
+	 *
+	 * @return view
 	*/
 	public function edit(Request $request)
 	{
-		// echo auth()->user()->id;exit;
 		$state_list = config( 'constants.state_list' );
 		$emp_data = User::retrieveData($request->id);
 		$comm_medium = CommunicationMedium::retrieveData();
@@ -29,6 +32,8 @@ class EmployeeController extends Controller
 	 * Handle Employee Delete
 	 *
 	 * @param  Request  $request
+	 *
+	 * @return redirect
 	*/
 	public function delete(Request $request)
 	{
@@ -45,6 +50,8 @@ class EmployeeController extends Controller
 	 * To view employee details
 	 *
 	 * @param  Request  $request
+	 *
+	 * @return response
 	*/
 	public function view(Request $request)
 	{
@@ -96,5 +103,50 @@ class EmployeeController extends Controller
 
 
 		return response()->json(['photo' => $photo_name, 'full_name' => $name, 'employment' => $emp_data[0]->employment, 'employer' => $emp_data[0]->employer, 'res_add' => $res_add, 'off_add' => $off_add, 'comm_medium' => $comm_val]);
+	}
+
+	/**
+	 * Fetch Twitter data
+	 *
+	 * @param  Request  $request
+	 *
+	 * @return response
+	*/
+	public function twitter(Request $request)
+	{
+		try
+		{
+			$twitter_name = User::retrieveData($request->id)[0]->twitter_name;
+			$num_tweets = $request->num_tweets;
+
+			if($twitter_name == null)
+			{
+				return response()->json(['err_msg' => 'Twitter account not given', 'err_val' => 2]);
+			}
+			else
+			{			
+				$response = Twitter::getUserTimeline(['screen_name' => $twitter_name, 'count' => $num_tweets, 'format' => 'object']);
+				$image = str_replace("normal","400x400",$response[0]->user->profile_image_url);
+				$user_name = $response[0]->user->name;
+				$result = array();
+
+				for($i=0; $i<$num_tweets; $i++)
+				{
+					if($response[$i]->text != '')
+					{
+						$result[$i] = $response[$i]->text;
+					}
+				}
+
+			}
+
+			return response()->json(['tweet_results' => $result, 'image' => $image, 'user_name' => $user_name]);
+		}
+		catch(\Exception $e)
+		{
+			Log::error($e);
+			return response()->json(['err_msg' => 'Invalid Twitter account', 'err_val' => 1]);
+		}
+
 	}
 }
