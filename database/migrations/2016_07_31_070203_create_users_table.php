@@ -12,8 +12,8 @@ class CreateUsersTable extends Migration
 	 */
 	public function up()
 	{
-		//
-		Schema::create('users', function (Blueprint $table) {
+		Schema::create('users', function (Blueprint $table)
+		{
 			$table->increments('id')->unsigned();
 			$table->string('first_name', 30);
 			$table->string('middle_name', 30);
@@ -30,6 +30,9 @@ class CreateUsersTable extends Migration
 			$table->string('photo', 100);
 			$table->text('extra_note');
 			$table->string('comm_id', 15);
+			$table->string('key', 60);
+			$table->tinyInteger('is_active')->default(0)->comment('0=Inactive, 1=Active');
+			$table->tinyInteger('role_id')->default(2)->comment('1=Admin, 2=Member');
 			$table->rememberToken();
 			$table->timestamps();
 		});
@@ -42,7 +45,6 @@ class CreateUsersTable extends Migration
 	 */
 	public function down()
 	{
-		//
 		Schema::drop('users');
 	}
 }

@@ -3,7 +3,8 @@
 @section('title', 'Login')
 
 @section('paging')
-<li>{!! Html::link('/register', 'Register') !!}</li>
+	<li>{!! Html::link('/home', 'Home') !!}</li>
+	<li>{!! Html::link('/register', 'Register') !!}</li>
 @endsection
 
 @section('content')

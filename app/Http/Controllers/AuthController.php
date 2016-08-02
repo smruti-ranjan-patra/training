@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\CommunicationMedium;
 use Auth;
 use Mail;
 
@@ -85,7 +86,8 @@ class AuthController extends Controller
 	public function register(Request $request)
 	{
 		$state_list = config( 'constants.state_list' );
-		return view('registration', ['state_list' => $state_list ]);
+		$comm_medium = CommunicationMedium::retrieveData();
+		return view('registration', ['state_list' => $state_list, 'comm_medium' => $comm_medium]);
 	}
 
 	/**
@@ -95,73 +97,125 @@ class AuthController extends Controller
 	*/
 	public function doRegister(Request $request)
 	{
-		if($this->validateRequest($request, 0))
+		// Update Data
+		if($request->id)
 		{
-		
-			$comm = $request->get('comm');
-
-			if ( !empty( $comm ) && empty( array_intersect( $comm, $this->comm_array) ) )
+			if($this->validateRequest($request, $request->id))
 			{
-				return redirect('register')->with( 'redirect_error', 'invalid com selection' )
-																		->withInput();
-			}
+				$data = $request->all();
+				$comm = $request->get('comm');
 
-			$data = $request->all();
-
-			if(isset($comm))
-			{
-				$data['comm_val'] = implode(', ', $comm);
-			}
-			else
-			{
-				$data['comm_val'] = '';
-			}
-
-			$user_insert_id = User::store($data);
-
-			if($request->hasFile('pic'))
-			{
-				$pic_name = AuthController::imageUpload($request, $user_insert_id);
-			}
-			else
-			{
-				$pic_name = '';
-			}
-
-			User::imageUpload($user_insert_id, $pic_name);
-
-			if($user_insert_id)
-			{
-				$data['id'] = $user_insert_id;
-				$address_insert_success = Address::store($data);
-
-				if($address_insert_success == 1)
+				if ( !empty( $comm ) && empty( array_intersect( $comm, $this->comm_array) ) )
 				{
-					\Session::flash('flash_message', 'A verification link has been sent to your mail id');
+					return redirect('register')->with( 'redirect_error', 'invalid com selection' )
+																			->withInput();
+				}
 
-					$key = User::find($user_insert_id)->key;
-					$url = 'http://172.16.8.115/project/training/public/login/verify/key/' . $key;
-
-					Mail::send('email', ['url' => $url], function ($message)
-					{
-						$message->from('1234asdf56789@gmail.com', 'Laravel');
-						$message->to('smrutip@mindfiresolutions.com', 'Hello User')->subject('Email Verification');
-					});
-
-					return redirect('login');
+				if(isset($comm))
+				{
+					$data['comm_val'] = implode(', ', $comm);
 				}
 				else
 				{
-					User::delete_record($user_insert_id);
-					return view('registration', ['db_insert_error', 'Please try again after sometime']);
+					$data['comm_val'] = '';
 				}
 
+				if($request->hasFile('pic'))
+				{
+					$pic_name = AuthController::imageUpload($request, $request->id);
+				}
+				else
+				{
+					$pic_name = User::retrieveData($request->id)[0]->photo;
+				}
+
+				$data['pic_name'] = $pic_name;
+
+				User::updateUser($data);
+				Address::updateAddress($data);
+				return redirect('details');
 			}
-			else
+
+		}
+		// Create data
+		else
+		{
+			if($this->validateRequest($request, 0))
 			{
-				return view('registration', ['db_insert_error', 'Please try again after sometime']);
+				// $user_id = auth()->user()->id;
+				$comm = $request->get('comm');
+
+				if ( !empty( $comm ) && empty( array_intersect( $comm, $this->comm_array) ) )
+				{
+					return redirect('register')->with( 'redirect_error', 'invalid com selection' )
+																			->withInput();
+				}
+
+				$data = $request->all();
+
+				if(isset($comm))
+				{
+					$data['comm_val'] = implode(', ', $comm);
+				}
+				else
+				{
+					$data['comm_val'] = '';
+				}
+
+				$user_insert_id = User::store($data);
+
+				if($request->hasFile('pic'))
+				{
+					$pic_name = AuthController::imageUpload($request, $user_insert_id);
+				}
+				else
+				{
+					$pic_name = '';
+				}
+
+				User::imageUpload($user_insert_id, $pic_name);
+
+				if($user_insert_id)
+				{
+					$data['id'] = $user_insert_id;
+					$address_insert_success = Address::store($data);
+
+					if($address_insert_success == 1)
+					{
+						\Session::flash('flash_message', 'A verification link has been sent to the registered mail id');
+
+						$key = User::find($user_insert_id)->key;
+						$url = config('constants.verification_path') . 'login/verify?key=' . $key;
+
+						Mail::send('email', ['url' => $url], function ($message)
+						{
+							$message->from('1234asdf56789@gmail.com', 'Laravel');
+							$message->to('smrutip@mindfiresolutions.com', 'Hello User')->subject('Email Verification');
+						});
+
+						if(auth()->user() != null)
+						{
+							return redirect('details');
+						}
+						else
+						{
+							return redirect('login');							
+						}
+					}
+					else
+					{
+						User::deleteRecord($user_insert_id);
+						return view('registration', ['db_insert_error', 'Please try again after sometime']);
+					}
+
+				}
+				else
+				{
+					return view('registration', ['db_insert_error', 'Please try again after sometime']);
+				}
 			}
 		}
+		
 	}
 
 	/**
@@ -234,11 +288,19 @@ class AuthController extends Controller
 	 *
 	 * @param  string  $key
 	*/
-	public function emailVerification($key)
+	public function emailVerification(Request $request)
 	{
-		User::verify_link($key);
-		\Session::flash('flash_message', 'Your account is active now');
-		return redirect('login');
+		$verification_success = User::verifyLink($request->key);
+
+		if($verification_success)
+		{
+			\Session::flash('flash_message', 'Your account is active now');
+			return redirect('login');			
+		}
+		else
+		{
+			return redirect('login')->with( 'redirect_error', 'You have clicked on an invalid verification link' );
+		}
 	}
 
 }

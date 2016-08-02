@@ -15,44 +15,68 @@ Route::get('/', function () {
 		return view('welcome');
 });
 
-Route::group(['middleware' => 'user_access'], function ()
-{
-Route::get('details', function () {
-	return "Test";
+Route::get('home', function () {
+		return view('home');
 });
 
-		Route::get('dashboard', 
-			['as' => 'dashboard',
-			'uses' => 'DashBoardController@dashboard']);
+Route::group(['middleware' => 'user_access'], function ()
+{
+	Route::get('dashboard', 
+		[
+			'as' => 'dashboard',
+			'uses' => 'DashBoardController@dashboard'
+		]);
+
+	Route::get('details', ['uses' => 'DatatablesController@getIndex']);
+	Route::get('edit', 'EmployeeController@edit');
+	Route::get('delete', 'EmployeeController@delete');
+	Route::get('view', 'EmployeeController@view');
+	Route::get('add_user', 'AuthController@register');
+
 });
 
 
 Route::get('register', 
-	['as' => 'register',
-	'uses' => 'AuthController@register']);
+	[
+		'as' => 'register',
+		'uses' => 'AuthController@register'
+	]);
 
 Route::post('do-register', 
-	['as' => 'do-register',
-	'uses' => 'AuthController@doRegister']);
+	[
+		'as' => 'do-register',
+		'uses' => 'AuthController@doRegister'
+	]);
 
 Route::get('login', 
-	['as' => 'login',
-	'uses' => 'AuthController@login']);
+	[
+		'as' => 'login',
+		'uses' => 'AuthController@login'
+	]);
 
 Route::post('do-login', 
-	['as' => 'do-login',
-	'uses' => 'AuthController@doLogin']);
-
-// Route::get('dashboard', 
-// 	['as' => 'dashboard',
-// 	'uses' => 'DashBoardController@dashboard']);
+	[
+		'as' => 'do-login',
+		'uses' => 'AuthController@doLogin'
+	]);
 
 Route::get('logout', 
-	['as' => 'logout',
-	'uses' => 'DashBoardController@logout']);
+	[
+		'as' => 'logout',
+		'uses' => 'DashBoardController@logout'
+	]);
 
-Route::get('login/verify/key/{key_val}', 
+Route::get('login/verify', 
 	['uses' => 'AuthController@emailVerification']);
+
+/*Route::controller('datatables', 'DatatablesController', 
+	[
+		'anyData'  => 'datatables.data',
+		'getIndex' => 'datatables'
+	]);*/
+
+// Route::get('datatables', ['uses' => 'DatatablesController@getIndex']);
+
 
 
 

@@ -25,6 +25,14 @@ class Address extends Model
 		'fax'
 	];
 
+	/**
+	 * Get the user that owns the address.
+	 */
+	public function user()
+	{
+		return $this->belongsTo('App\Models\User');
+	}
+
 	public static function store($post_data)
 	{
 		try
@@ -37,7 +45,7 @@ class Address extends Model
 						'address_type' => 'residence',
 						'street' => $post_data['r_street'],
 						'city' => $post_data['r_city'],
-						'state' => config( 'constants.state_list.' . $post_data['r_state']),
+						'state' => $post_data['r_state'],
 						'zip' => $post_data['r_zip'],
 						'phone' => $post_data['r_phone'],
 						'fax' => $post_data['r_fax']
@@ -48,7 +56,7 @@ class Address extends Model
 						'address_type' => 'office',
 						'street' => $post_data['o_street'],
 						'city' => $post_data['o_city'],
-						'state' => config( 'constants.state_list.' . $post_data['o_state']),
+						'state' => $post_data['o_state'],
 						'zip' => $post_data['o_zip'],
 						'phone' => $post_data['o_phone'],
 						'fax' => $post_data['o_fax']
@@ -62,6 +70,38 @@ class Address extends Model
 			return 0;
 			Log::error($e);
 		}
+	}
+
+	/**
+	 * To Update all data
+	 *
+	 * @param  string  $key
+	*/
+	public static function updateAddress ($post_data)
+	{
+		Address::where('user_id', '=', $post_data['id'])
+					->where('address_type', '=', 'residence')
+						->update(
+							[
+								'street' => $post_data['r_street'],
+								'city' => $post_data['r_city'],
+								'state' => $post_data['r_state'],
+								'zip' => $post_data['r_zip'],
+								'phone' => $post_data['r_phone'],
+								'fax' => $post_data['r_fax']
+							]);
+
+		Address::where('user_id', '=', $post_data['id'])
+					->where('address_type', '=', 'office')
+						->update(
+							[
+								'street' => $post_data['o_street'],
+								'city' => $post_data['o_city'],
+								'state' => $post_data['o_state'],
+								'zip' => $post_data['o_zip'],
+								'phone' => $post_data['o_phone'],
+								'fax' => $post_data['o_fax']
+							]);
 	}
 
 	/**

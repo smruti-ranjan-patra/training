@@ -39,5 +39,6 @@ return [
 		'34' => 'Uttaranchal',
 		'35' => 'Uttar Pradesh',
 		'36' => 'West Bengal'
-	)
+	),
+	'verification_path' => 'http://172.16.8.115/project/training/public/'
 ];
