@@ -58,7 +58,7 @@ class AuthController extends Controller
 			'twitter' => 'max:15',
 			'prefix' => 'in:mr,ms,mrs',
 			'gender' => 'in:male,female,others',
-			'dob' => 'required',
+			'dob' => 'date',
 			'marital' => 'in:single,married',
 			'employment' => 'in:employed,unemployed',
 			'employer' => 'max:20',
@@ -182,24 +182,32 @@ class AuthController extends Controller
 
 					if($address_insert_success == 1)
 					{
-						\Session::flash('flash_message', 'A verification link has been sent to the registered mail id');
-
-						$key = User::find($user_insert_id)->key;
-						$url = config('constants.verification_path') . 'login/verify?key=' . $key;
-
-						Mail::send('email', ['url' => $url], function ($message)
-						{
-							$message->from('1234asdf56789@gmail.com', 'Laravel');
-							$message->to($request->email, 'Hello User')->subject('Email Verification');
-						});
-
 						// Adding User by Admin
 						if(auth()->user() != null)
 						{
+							$mail_text = 'Your new account has been created by ' . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' and your password is : ' . $request->password;
+
+							Mail::raw($mail_text, function ($message)
+							{
+								$message->from('1234asdf56789@gmail.com', 'Laravel');
+								$message->to($request->email, 'Hello User')->subject('New Account');
+							});
+							
 							return redirect('dashboard');
-						}
+						}						
 						else // User registering its own details
 						{
+							\Session::flash('flash_message', 'A verification link has been sent to the registered mail id');
+
+							$key = User::find($user_insert_id)->key;
+							$url = config('constants.verification_path') . 'login/verify?key=' . $key;
+
+							Mail::send('email', ['url' => $url], function ($message)
+							{
+								$message->from('1234asdf56789@gmail.com', 'Laravel');
+								$message->to($request->email, 'Hello User')->subject('Email Verification');
+							});
+
 							return redirect('login');
 						}
 					}

@@ -1,11 +1,5 @@
 $(document).ready(function()
 {
-	/*$('.permission-check').on('change', function(e)
-	{
-		e.preventDefault();
-		check_action(this);
-	});*/
-
 	$('.permission-check').on('change', function()
 	{
 		check_action(this);

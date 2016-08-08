@@ -191,18 +191,16 @@
 									{!! Form::label('others','Others') !!}
 								</div>
 							</div>
-						@endif
 
-						<!-- DOB -->
-						<div class="row form-group">
-							{!! Form::label('dob', 'DOB :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<!-- DOB -->
+							<div class="row form-group">
+								{!! Form::label('dob', 'DOB :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{{ Form::date('dob', $dob, ['class' => 'form-control'])}}
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{{ Form::date('dob', $dob, ['class' => 'form-control'])}}
+								</div>
 							</div>
-						</div>
 
-						@if(! (Auth::check() && Auth::user()->role_id == 1))
 							<!-- Marital Status -->
 							<div class="row form-group">
 								{!! Form::label('marital_status', 'Marital Status :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
