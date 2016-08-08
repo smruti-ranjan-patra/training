@@ -3,8 +3,17 @@
 @section('title', 'Registration')
 
 @section('paging')
+
 	<li>{!! Html::link('/home', 'Home') !!}</li>
-	<li>{!! Html::link('/login', 'Login') !!}</li>
+
+	@if(!(Auth::check()))
+		<li>{!! Html::link('/login', 'Login') !!}</li>
+	@endif
+
+	@if(Auth::check())
+		<li>{!! Html::link('/logout', 'Log out') !!}</li>
+	@endif
+	
 @endsection
 
 <?php
@@ -44,7 +53,6 @@
 
 	$emp_comm_medium = [];
 
-
 	if (isset($emp_data) && !empty($emp_data))
 	{
 		$id = $emp_data[0]->id;
@@ -77,7 +85,6 @@
 		$o_fax = $emp_data[0]->address[1]->fax;
 		$notes = $emp_data[0]->extra_note;
 		$emp_comm_medium = explode(" ", $emp_data[0]->comm_id);
-		// $emp_comm_medium = [1,2,3];
 	}
 
 ?>
@@ -143,46 +150,48 @@
 							</div>
 						</div>
 
-						<!-- Twitter Account -->
-						<div class="row form-group">
-							{!! Form::label('twitter', 'Twitter name :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+						@if(! (Auth::check() && Auth::user()->role_id == 1))
+							<!-- Twitter Account -->
+							<div class="row form-group">
+								{!! Form::label('twitter', 'Twitter name :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{!! Form::text('twitter_name', $twitter_name, array('id' => 'twitter', 'value' => old('twitter'), 'placeholder' => 'iamfree', 'class' => 'form-control' )) !!}
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{!! Form::text('twitter_name', $twitter_name, array('id' => 'twitter', 'value' => old('twitter'), 'placeholder' => 'iamfree', 'class' => 'form-control' )) !!}
+								</div>
 							</div>
-						</div>
 
-						<!-- Prefix -->
-						<div class="row form-group">
-							{!! Form::label('prefix', 'Prefix :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<!-- Prefix -->
+							<div class="row form-group">
+								{!! Form::label('prefix', 'Prefix :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{!! Form::radio('prefix','mr', $prefix_1, array('id' => 'mr')) !!}
-								{!! Form::label('mr','Mr')!!}&nbsp;
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{!! Form::radio('prefix','mr', $prefix_1, array('id' => 'mr')) !!}
+									{!! Form::label('mr','Mr')!!}&nbsp;
 
-								{!! Form::radio('prefix','ms', $prefix_2, array('id' => 'ms')) !!}
-								{!! Form::label('ms','Ms')!!}&nbsp;
+									{!! Form::radio('prefix','ms', $prefix_2, array('id' => 'ms')) !!}
+									{!! Form::label('ms','Ms')!!}&nbsp;
 
-								{!! Form::radio('prefix','mrs', $prefix_3, array('id' => 'mrs')) !!}
-								{!! Form::label('mrs','Mrs')!!}
+									{!! Form::radio('prefix','mrs', $prefix_3, array('id' => 'mrs')) !!}
+									{!! Form::label('mrs','Mrs')!!}
+								</div>
 							</div>
-						</div>
 
-						<!-- Gender -->
-						<div class="row form-group">
-							{!! Form::label('gender', 'Gender :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<!-- Gender -->
+							<div class="row form-group">
+								{!! Form::label('gender', 'Gender :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{!! Form::radio('gender','male', $gender_1, array('id' => 'male')) !!}
-								{!! Form::label('male','Male') !!}&nbsp;
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{!! Form::radio('gender','male', $gender_1, array('id' => 'male')) !!}
+									{!! Form::label('male','Male') !!}&nbsp;
 
-								{!! Form::radio('gender','female', $gender_2, array('id' => 'female')) !!}
-								{!! Form::label('female','Female') !!}&nbsp;
+									{!! Form::radio('gender','female', $gender_2, array('id' => 'female')) !!}
+									{!! Form::label('female','Female') !!}&nbsp;
 
-								{!! Form::radio('gender','others', $gender_3, array('id' => 'others')) !!}
-								{!! Form::label('others','Others') !!}
+									{!! Form::radio('gender','others', $gender_3, array('id' => 'others')) !!}
+									{!! Form::label('others','Others') !!}
+								</div>
 							</div>
-						</div>
+						@endif
 
 						<!-- DOB -->
 						<div class="row form-group">
@@ -193,187 +202,189 @@
 							</div>
 						</div>
 
-						<!-- Marital Status -->
-						<div class="row form-group">
-							{!! Form::label('marital_status', 'Marital Status :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+						@if(! (Auth::check() && Auth::user()->role_id == 1))
+							<!-- Marital Status -->
+							<div class="row form-group">
+								{!! Form::label('marital_status', 'Marital Status :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{!! Form::radio('marital_status','single', $marital_status_1, array('id' => 'single')) !!}
-								{!! Form::label('single', 'Single') !!}&nbsp;
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{!! Form::radio('marital_status','single', $marital_status_1, array('id' => 'single')) !!}
+									{!! Form::label('single', 'Single') !!}&nbsp;
 
-								{!! Form::radio('marital_status','married', $marital_status_2, array('id' => 'married')) !!}
-								{!! Form::label('married', 'Married') !!}
-							</div>
-						</div>
-
-						<!-- Employment -->
-						<div class="row form-group">
-							{!! Form::label('employment', 'Employment :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
-
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{!! Form::radio('employment','employed', $employment_1, array('id' => 'employed')) !!}
-								{!! Form::label('employed','Employed') !!}&nbsp;
-
-								{!! Form::radio('employment','unemloyed', $employment_2, array('id' => 'unemployed')) !!}
-								{!! Form::label('unemployed','Unemployed') !!}
-							</div>
-						</div>
-
-						<!-- Employer -->
-						<div class="row form-group">
-							{!! Form::label('employer', 'Employer :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
-
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{!! Form::text('employer', $employer, array('id' => 'employer', 'value' => old('employer'), 'placeholder' => 'Organization', 'class' => 'form-control' )) !!}
-							</div>
-						</div>
-
-						<!-- Residence Address -->
-						<div class="row form-group">
-							<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-								<h4><u>Residence Address :-</u></h4>
-
-									<div class="row form-group">
-										{!! Form::label('r_street', 'Street :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('r_street', $r_street, array('id' => 'r_street', 'value' => old('r_street'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('r_city', 'City :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('r_city', $r_city, array('id' => 'r_city', 'value' => old('r_city'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('r_state', 'State :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::select('r_state', $state_list, $r_state, ['class' => 'form-control']) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('r_zip', 'Zip :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('r_zip', $r_zip, array('id' => 'r_zip', 'value' => old('r_zip'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('r_phone', 'Phone :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('r_phone', $r_phone, array('id' => 'r_phone', 'value' => old('r_phone'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('r_fax', 'Fax :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('r_fax', $r_fax, array('id' => 'r_fax', 'value' => old('r_fax'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
+									{!! Form::radio('marital_status','married', $marital_status_2, array('id' => 'married')) !!}
+									{!! Form::label('married', 'Married') !!}
+								</div>
 							</div>
 
-							<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-								<h4><u>Office Address :-</u></h4>
+							<!-- Employment -->
+							<div class="row form-group">
+								{!! Form::label('employment', 'Employment :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-									<div class="row form-group">
-										{!! Form::label('o_street', 'Street :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{!! Form::radio('employment','employed', $employment_1, array('id' => 'employed')) !!}
+									{!! Form::label('employed','Employed') !!}&nbsp;
 
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('o_street', $o_street, array('id' => 'o_street', 'value' => old('o_street'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('o_city', 'City :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('o_city', $o_city, array('id' => 'o_city', 'value' => old('o_city'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('o_state', 'State :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::select('o_state', $state_list, $o_state, ['class' => 'form-control']) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('o_zip', 'Zip :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('o_zip', $o_zip, array('id' => 'o_zip', 'value' => old('o_zip'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('o_phone', 'Phone :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('o_phone', $o_phone, array('id' => 'o_phone', 'value' => old('o_phone'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
-
-									<div class="row form-group">
-										{!! Form::label('o_fax', 'Fax :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
-
-										<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-											{!! Form::text('o_fax', $o_fax, array('id' => 'o_fax', 'value' => old('o_fax'), 'class' => 'form-control' )) !!}
-										</div>
-									</div>
+									{!! Form::radio('employment','unemloyed', $employment_2, array('id' => 'unemployed')) !!}
+									{!! Form::label('unemployed','Unemployed') !!}
+								</div>
 							</div>
-						</div>
 
-						<!-- Personal Info :- --> 
-						<!-- Photo -->
-						<h4><u>Personal Info :-</u></h4>
-						<div class="row form-group">
-							{!! Form::label('pic', 'Photo :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<!-- Employer -->
+							<div class="row form-group">
+								{!! Form::label('employer', 'Employer :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-								{!! Form::file('pic', array('id' => 'pic', 'class' => 'form-control' )) !!}
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{!! Form::text('employer', $employer, array('id' => 'employer', 'value' => old('employer'), 'placeholder' => 'Organization', 'class' => 'form-control' )) !!}
+								</div>
 							</div>
-						</div>
-						
-						<!-- Extra Notes -->
-						<div class="row form-group">
-							{!! Form::label('notes', 'Extra Notes :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-							{!! Form::textarea('notes', $notes, array('id' => 'notes', 'class' => 'form-control', 'placeholder' => 'Something about you')) !!}
+							<!-- Address -->
+							<div class="row form-group">
+								<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+									<h4><u>Residence Address :-</u></h4>
+
+										<div class="row form-group">
+											{!! Form::label('r_street', 'Street :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('r_street', $r_street, array('id' => 'r_street', 'value' => old('r_street'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('r_city', 'City :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('r_city', $r_city, array('id' => 'r_city', 'value' => old('r_city'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('r_state', 'State :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::select('r_state', $state_list, $r_state, ['class' => 'form-control']) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('r_zip', 'Zip :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('r_zip', $r_zip, array('id' => 'r_zip', 'value' => old('r_zip'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('r_phone', 'Phone :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('r_phone', $r_phone, array('id' => 'r_phone', 'value' => old('r_phone'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('r_fax', 'Fax :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('r_fax', $r_fax, array('id' => 'r_fax', 'value' => old('r_fax'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+								</div>
+
+								<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+									<h4><u>Office Address :-</u></h4>
+
+										<div class="row form-group">
+											{!! Form::label('o_street', 'Street :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('o_street', $o_street, array('id' => 'o_street', 'value' => old('o_street'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('o_city', 'City :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('o_city', $o_city, array('id' => 'o_city', 'value' => old('o_city'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('o_state', 'State :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::select('o_state', $state_list, $o_state, ['class' => 'form-control']) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('o_zip', 'Zip :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('o_zip', $o_zip, array('id' => 'o_zip', 'value' => old('o_zip'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('o_phone', 'Phone :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('o_phone', $o_phone, array('id' => 'o_phone', 'value' => old('o_phone'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+
+										<div class="row form-group">
+											{!! Form::label('o_fax', 'Fax :', array('class' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label')) !!}
+
+											<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+												{!! Form::text('o_fax', $o_fax, array('id' => 'o_fax', 'value' => old('o_fax'), 'class' => 'form-control' )) !!}
+											</div>
+										</div>
+								</div>
 							</div>
-						</div>
 
-						<!-- Preferred Communicatio -->
-						<div class="row form-group">
-							{!! Form::label('comm', 'Preferred Communication Medium :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<!-- Personal Info :- --> 
+							<!-- Photo -->
+							<h4><u>Personal Info :-</u></h4>
+							<div class="row form-group">
+								{!! Form::label('pic', 'Photo :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
-							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-
-								@foreach($comm_medium as $medium)
-									<?php
-
-										$checked = in_array($medium['id'], $emp_comm_medium) ? true : null;
-
-									?>
-
-									{!! Form::checkbox('comm[]', $medium['id'], $checked, ['id' => 'comm_' . $medium['type'], 'value' => $medium['id']]) !!}
-									{!! Form::label('comm_' . $medium['type'], $medium['type']) !!}&nbsp;
-								@endforeach
-
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+									{!! Form::file('pic', array('id' => 'pic', 'class' => 'form-control' )) !!}
+								</div>
 							</div>
-						</div>						
+							
+							<!-- Extra Notes -->
+							<div class="row form-group">
+								{!! Form::label('notes', 'Extra Notes :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+								{!! Form::textarea('notes', $notes, array('id' => 'notes', 'class' => 'form-control', 'placeholder' => 'Something about you')) !!}
+								</div>
+							</div>
+
+							<!-- Preferred Communicatio -->
+							<div class="row form-group">
+								{!! Form::label('comm', 'Preferred Communication Medium :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+
+								<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+
+									@foreach($comm_medium as $medium)
+										<?php
+
+											$checked = in_array($medium['id'], $emp_comm_medium) ? true : null;
+
+										?>
+
+										{!! Form::checkbox('comm[]', $medium['id'], $checked, ['id' => 'comm_' . $medium['type'], 'value' => $medium['id']]) !!}
+										{!! Form::label('comm_' . $medium['type'], $medium['type']) !!}&nbsp;
+									@endforeach
+
+								</div>
+							</div>
+						@endif
 
 						<!-- Submit Button -->
 						<div class="form-group text-center">

@@ -40,6 +40,14 @@
 							</div>
 						</div>
 
+						<div class="form-group">
+							<div class="col-sm-3">
+							</div>
+							
+							{!! HTML::link('/reset-password', 'Reset Password', array('id' => 'reset_password', 'class' => 'col-sm-6')) !!}
+							
+						</div>
+
 						<!-- Login Button -->
 						<div class="form-group text-center">
 								{!! Form::submit('Login', ['class' => 'btn btn-primary']) !!}

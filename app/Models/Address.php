@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-	// The table associated with the model.
+	// The table associated with this model.
 	protected $table = 'address';
 
 	/**

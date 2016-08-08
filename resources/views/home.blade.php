@@ -3,8 +3,17 @@
 @section('title', 'Home')
 
 @section('paging')
-	<li>{!! Html::link('/login', 'Login') !!}</li>
-	<li>{!! Html::link('/register', 'Register') !!}</li>
+
+	@if(!(Auth::check()))
+		<li>{!! Html::link('/login', 'Login') !!}</li>
+		<li>{!! Html::link('/register', 'Register') !!}</li>
+	@endif
+
+	@if(Auth::check())
+		<li>{!! Html::link('/dashboard', 'Dashboard') !!}</li>
+		<li>{!! Html::link('/logout', 'Log out') !!}</li>
+	@endif
+
 @endsection
 
 @section('content')

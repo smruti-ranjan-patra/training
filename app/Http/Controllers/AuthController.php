@@ -7,18 +7,23 @@ use App\Http\Requests;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\CommunicationMedium;
+use App\Models\Role;
+use App\Models\Resource;
+use App\Models\Permission;
+use App\Models\RoleResourcePermission;
 use Auth;
 use Mail;
+use Hash;
 
 class AuthController extends Controller
 {
 	public $comm_array = ['1','2','3','4'];
 
 	/**
-		 * To validate the fields
-		 *
-		 * @param  Request  $request
-		 * @param  integer  $user_id
+	 * To validate the fields
+	 *
+	 * @param  Request  $request
+	 * @param  integer  $user_id
 	*/
 	public function validateRequest($request, $user_id)
 	{
@@ -41,47 +46,45 @@ class AuthController extends Controller
 			'o_phone.required' => 'Please provide Office Phone no.',
 			'r_fax.required' => 'Please provide Residence Fax no.',
 			'o_fax.required' => 'Please provide Office Fax no.'
-
 		];
 
 		$state_string = implode(',', array_keys($state_list));
 		$val_array = [
-							'first_name' => 'required|alpha|min:2|max:15',
-							'middle_name' => 'alpha|max:15',
-							'last_name' => 'required|alpha|min:2|max:15',
-							'email' => 'required|email|unique:users,email,' . $user_id,
-							'password' => 'required|min:8|max:12',
-							'twitter' => 'max:15',
-							'prefix' => 'in:mr,ms,mrs',
-							'gender' => 'in:male,female,others',
-							'dob' => 'required',
-							'marital' => 'in:single,married',
-							'employment' => 'in:employed,unemployed',
-							'employer' => 'max:20',
-							'r_street' => 'alpha_dash|max:20',
-							'o_street' => 'alpha_dash|max:20',
-							'r_city' => 'alpha|max:20',
-							'o_city' => 'alpha|max:20',
-							'r_state' => 'in:' . $state_string,
-							'o_state' => 'in:' . $state_string,
-							'r_zip' => 'numeric|digits_between:5,6',
-							'o_zip' => 'numeric|digits_between:5,6',
-							'r_phone' => 'numeric|digits_between:7,11',
-							'o_phone' => 'numeric|digits_between:7,11',
-							'r_fax' => 'numeric|digits_between:7,11',
-							'o_fax' => 'numeric|digits_between:7,11',
-							'pic' => 'image|mimes:jpeg,jpg,JPG,JPEG|max:6144'
-
-					];
+			'first_name' => 'required|alpha|min:2|max:15',
+			'middle_name' => 'alpha|max:15',
+			'last_name' => 'required|alpha|min:2|max:15',
+			'email' => 'required|email|unique:users,email,' . $user_id,
+			'password' => 'required|min:8|max:12',
+			'twitter' => 'max:15',
+			'prefix' => 'in:mr,ms,mrs',
+			'gender' => 'in:male,female,others',
+			'dob' => 'required',
+			'marital' => 'in:single,married',
+			'employment' => 'in:employed,unemployed',
+			'employer' => 'max:20',
+			'r_street' => 'alpha_dash|max:20',
+			'o_street' => 'alpha_dash|max:20',
+			'r_city' => 'alpha|max:20',
+			'o_city' => 'alpha|max:20',
+			'r_state' => 'in:' . $state_string,
+			'o_state' => 'in:' . $state_string,
+			'r_zip' => 'numeric|digits_between:5,6',
+			'o_zip' => 'numeric|digits_between:5,6',
+			'r_phone' => 'numeric|digits_between:7,11',
+			'o_phone' => 'numeric|digits_between:7,11',
+			'r_fax' => 'numeric|digits_between:7,11',
+			'o_fax' => 'numeric|digits_between:7,11',
+			'pic' => 'image|mimes:jpeg,jpg,JPG,JPEG|max:6144'
+		];
 
 		$this->validate($request, $val_array, $messages);
 		return true;
 	}
 
 	/**
-		 * Show registration form
-		 *
-		 * @param  Request  $request
+	 * Show registration form
+	 *
+ 	 * @param  Request  $request
 	*/
 	public function register(Request $request)
 	{
@@ -91,9 +94,9 @@ class AuthController extends Controller
 	}
 
 	/**
-		 * Process registration form
-		 *
-		 * @param  Request  $request
+	 * Process registration form
+	 *
+	 * @param  Request  $request
 	*/
 	public function doRegister(Request $request)
 	{
@@ -135,14 +138,11 @@ class AuthController extends Controller
 				Address::updateAddress($data);
 				return redirect('details');
 			}
-
 		}
-		// Create data
-		else
+		else // Create user data
 		{
 			if($this->validateRequest($request, 0))
 			{
-				// $user_id = auth()->user()->id;
 				$comm = $request->get('comm');
 
 				if ( !empty( $comm ) && empty( array_intersect( $comm, $this->comm_array) ) )
@@ -190,16 +190,17 @@ class AuthController extends Controller
 						Mail::send('email', ['url' => $url], function ($message)
 						{
 							$message->from('1234asdf56789@gmail.com', 'Laravel');
-							$message->to('smrutip@mindfiresolutions.com', 'Hello User')->subject('Email Verification');
+							$message->to($request->email, 'Hello User')->subject('Email Verification');
 						});
 
+						// Adding User by Admin
 						if(auth()->user() != null)
 						{
-							return redirect('details');
+							return redirect('dashboard');
 						}
-						else
+						else // User registering its own details
 						{
-							return redirect('login');							
+							return redirect('login');
 						}
 					}
 					else
@@ -207,7 +208,6 @@ class AuthController extends Controller
 						User::deleteRecord($user_insert_id);
 						return view('registration', ['db_insert_error', 'Please try again after sometime']);
 					}
-
 				}
 				else
 				{
@@ -215,7 +215,6 @@ class AuthController extends Controller
 				}
 			}
 		}
-		
 	}
 
 	/**
@@ -240,7 +239,6 @@ class AuthController extends Controller
 	*/
 	public function login(Request $request)
 	{
-
 		if(Auth::check())
 		{
 			return redirect('dashboard');
@@ -249,7 +247,6 @@ class AuthController extends Controller
 		{
 			return view('login');
 		}
-
 	}
 
 	/**
@@ -259,7 +256,6 @@ class AuthController extends Controller
 	*/
 	public function doLogin(Request $request)
 	{
-
 		$messages = [
 			'email.required' => 'Email is required!!!',
 			'password.required' => 'Password is required!!!',
@@ -268,9 +264,9 @@ class AuthController extends Controller
 		];
 
 		$this->validate($request, [
-				'email' => 'required|email',
-				'password' => 'required|min:8|max:12'
-			], $messages);
+			'email' => 'required|email',
+			'password' => 'required|min:8|max:12'
+		], $messages);
 
 		if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_active' => 1]))
 		{
@@ -280,13 +276,12 @@ class AuthController extends Controller
 		{
 			return redirect('login')->with( 'redirect_error', 'Login Failed' );
 		}
-
 	}
 
 	/**
 	 * To verify though mail
 	 *
-	 * @param  string  $key
+	 * @param  object $request
 	*/
 	public function emailVerification(Request $request)
 	{
@@ -300,6 +295,122 @@ class AuthController extends Controller
 		else
 		{
 			return redirect('login')->with( 'redirect_error', 'You have clicked on an invalid verification link' );
+		}
+	}
+
+	/**
+	 * To open reset password form
+	 *
+	 * @param  object $request
+	*/
+	public function resetPassword(Request $request)
+	{
+		return view('reset_password');
+	}
+
+	/**
+	 * To reset the user password
+	 *
+	 * @param  object $request
+	*/
+	public function doResetPassword(Request $request)
+	{
+		$this->validate($request, [
+				'email' => 'required|email'
+		]);
+
+		$new_password = AuthController::randStrGen(8);
+
+		$mail_text = 'The new password for your email id - ' . $request->email . ' is  ' . $new_password;
+
+		Mail::raw($mail_text, function ($message)
+		{
+			$message->from('1234asdf56789@gmail.com', 'Laravel');
+			$message->to($request->email, 'Hello User')->subject('Reset Password');
+		});
+
+		try
+		{
+			User::where('email', '=', $request->email)
+				->update(
+					[
+						'password' => Hash::make($new_password)
+					]);
+			
+			$user = User::where('email', $request->email)->first();
+			User::where('id', '=', $user->id)
+				->update(
+					[
+						'key' => Hash::make( $user->id . $new_password )
+					]);
+
+			\Session::flash('flash_message', 'Your new password has been sent to the registered mail id');
+			return redirect('login');
+		}
+		catch(\Exception $e)
+		{
+			Log::error($e);
+			return redirect('reset-password')->with('db_insert_error', 'Please try again after sometime !');
+		}
+	}
+
+	/**
+	 * To generate a random string password
+	 *
+	 * @param  integer $len
+	*/
+	public static function randStrGen($len)
+	{
+		$result = "";
+		$chars = "abcdefghijklmnopqrstuvwxyz$0123456789";
+		$charArray = str_split($chars);
+		
+		for($i = 0; $i < $len; $i++)
+		{
+			$randItem = array_rand($charArray);
+			$result .= "".$charArray[$randItem];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * To display the permission manager
+	 *
+	 * @param  void
+	*/
+	public function displayPermissionManager()
+	{
+		$roles = Role::retrieveData();
+		$resources = Resource::retrieveData();
+		$permissions = Permission::retrieveData();
+		$rrp = RoleResourcePermission::retrieveData();
+		$selected_permission = [];
+
+		foreach($rrp as $value)
+		{
+			$selected_permission[$value->fk_role . '-' . $value->fk_resource . '-' . $value->fk_permission] = true;
+		}
+
+		return view('permission_manager', ['roles' => $roles, 'resources' => $resources, 'permissions' => $permissions, 'selected_permission' => $selected_permission]);
+	}
+
+	/**
+	 * To display the permission manager
+	 *
+	 * @param  Request  $request
+	 *
+	 * @return void
+	*/
+	public function changePermission(Request $request)
+	{
+		if($request->is_checked == 1)
+		{
+			RoleResourcePermission::insertData($request->id);
+		}
+		else
+		{
+			RoleResourcePermission::deleteData($request->id);
 		}
 	}
 

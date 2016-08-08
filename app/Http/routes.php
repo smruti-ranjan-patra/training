@@ -32,6 +32,8 @@ Route::group(['middleware' => 'user_access'], function ()
 	Route::get('delete', 'EmployeeController@delete');
 	Route::get('view', 'EmployeeController@view');
 	Route::get('add_user', 'AuthController@register');
+	Route::get('permission', 'AuthController@displayPermissionManager');
+	Route::get('change_permission', 'AuthController@changePermission');
 
 
 });
@@ -71,6 +73,11 @@ Route::get('logout',
 
 Route::get('login/verify', 
 	['uses' => 'AuthController@emailVerification']);
+
+Route::get('reset-password', 'AuthController@resetPassword');
+
+Route::post('do-reset-password', 'AuthController@doResetPassword');
+
 
 /*Route::controller('datatables', 'DatatablesController', 
 	[
