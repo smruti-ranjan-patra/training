@@ -63,9 +63,24 @@ class EmployeeController extends Controller
 		$r_state = config( 'constants.state_list.' . $emp_data[0]->address[0]->state);
 		$o_state = config( 'constants.state_list.' . $emp_data[0]->address[1]->state);
 
-		$res_add = $emp_data[0]->address[0]->street . ', ' . $emp_data[0]->address[0]->city . ', ' . $r_state . ', ' . $emp_data[0]->address[0]->zip . ', ' . $emp_data[0]->address[0]->phone . ', ' . $emp_data[0]->address[0]->fax;
+		$res_add = '';
+		$off_add = '';
 
-		$off_add = $emp_data[0]->address[1]->street . ', ' . $emp_data[0]->address[1]->city . ', ' . $o_state . ', ' . $emp_data[0]->address[1]->zip . ', ' . $emp_data[0]->address[1]->phone . ', ' . $emp_data[0]->address[1]->fax;
+		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->street);
+		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->city);
+		$res_add .= EmployeeController::displayAddress($r_state);
+		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->zip);
+		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->phone);
+		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->fax);
+		$res_add = rtrim($res_add, ", ");
+
+		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->street);
+		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->city);
+		$off_add .= EmployeeController::displayAddress($o_state);
+		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->zip);
+		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->phone);
+		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->fax);
+		$off_add = rtrim($off_add, ", ");
 
 		if($emp_data[0]->photo == '')
 		{
@@ -103,6 +118,27 @@ class EmployeeController extends Controller
 
 
 		return response()->json(['photo' => $photo_name, 'full_name' => $name, 'employment' => $emp_data[0]->employment, 'employer' => $emp_data[0]->employer, 'res_add' => $res_add, 'off_add' => $off_add, 'comm_medium' => $comm_val]);
+	}
+
+	/**
+	 * To display address
+	 *
+	 * @param  string $data
+	 *
+	 * @return string $display_string
+	*/
+	public static function displayAddress($data)
+	{
+		if($data === '' || $data === 0)
+		{
+			$display_string = '';
+		}
+		else
+		{
+			$display_string = $data . ', ';
+		}
+
+		return $display_string;
 	}
 
 	/**

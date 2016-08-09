@@ -43,23 +43,23 @@ class Address extends Model
 					[
 						'user_id' => $post_data['id'],
 						'address_type' => 'residence',
-						'street' => $post_data['r_street'],
-						'city' => $post_data['r_city'],
-						'state' => $post_data['r_state'],
-						'zip' => $post_data['r_zip'],
-						'phone' => $post_data['r_phone'],
-						'fax' => $post_data['r_fax']
+						'street' => isset($post_data['r_street']) ? $post_data['r_street'] : '',
+						'city' => isset($post_data['r_city']) ? $post_data['r_city'] : '',
+						'state' => isset($post_data['r_state']) ? $post_data['r_state'] : '',
+						'zip' => isset($post_data['r_zip']) ? $post_data['r_zip'] : '',
+						'phone' => isset($post_data['r_phone']) ? $post_data['r_phone'] : '',
+						'fax' => isset($post_data['r_fax']) ? $post_data['r_fax'] : ''
 					],
 
 					[
 						'user_id' => $post_data['id'],
 						'address_type' => 'office',
-						'street' => $post_data['o_street'],
-						'city' => $post_data['o_city'],
-						'state' => $post_data['o_state'],
-						'zip' => $post_data['o_zip'],
-						'phone' => $post_data['o_phone'],
-						'fax' => $post_data['o_fax']
+						'street' => isset($post_data['o_street']) ? $post_data['o_street'] : '',
+						'city' => isset($post_data['o_city']) ? $post_data['o_city'] : '',
+						'state' => isset($post_data['o_state']) ? $post_data['o_state'] : '',
+						'zip' => isset($post_data['o_zip']) ? $post_data['o_zip'] : '',
+						'phone' => isset($post_data['o_phone']) ? $post_data['o_phone'] : '',
+						'fax' => isset($post_data['o_fax']) ? $post_data['o_fax'] : ''
 					]
 
 				]);
@@ -67,8 +67,8 @@ class Address extends Model
 		}
 		catch(\Exception $e)
 		{
+			Log::error('address table create data : '.$e);
 			return 0;
-			Log::error($e);
 		}
 	}
 

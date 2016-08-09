@@ -57,15 +57,15 @@ class User extends Model
 					'last_name' => $post_data['last_name'],
 					'email' => $post_data['email'],
 					'password' => Hash::make($post_data['password']),
-					'twitter_name' => $post_data['twitter_name'],
-					'prefix' => $post_data['prefix'],
-					'gender' => $post_data['gender'],
-					'dob' => $post_data['dob'],
-					'marital_status' => $post_data['marital_status'],
-					'employment' => $post_data['employment'],
-					'employer' => $post_data['employer'],
-					'extra_note' => $post_data['notes'],
-					'comm_id' => $post_data['comm_val']
+					'twitter_name' => isset($post_data['twitter_name']) ? $post_data['twitter_name'] : '',
+					'prefix' => isset($post_data['prefix']) ? $post_data['prefix'] : '',
+					'gender' => isset($post_data['gender']) ? $post_data['gender'] : '',
+					'dob' => isset($post_data['dob']) ? $post_data['dob'] : '',
+					'marital_status' => isset($post_data['marital_status']) ? $post_data['marital_status'] : '',
+					'employment' => isset($post_data['employment']) ? $post_data['employment'] : '',
+					'employer' =>isset($post_data['employer']) ? $post_data['employer'] : '',
+					'extra_note' => isset($post_data['extra_note']) ? $post_data['extra_note'] : '',
+					'comm_id' => isset($post_data['comm_val']) ? $post_data['comm_val'] : '',
 				]);
 
 			User::find($user->id)->update(['key' => Hash::make( $user->id . $post_data['password'])]);
@@ -73,7 +73,7 @@ class User extends Model
 		}
 		catch(\Exception $e)
 		{
-			Log::error($e);
+			Log::error('user table create data : '.$e);
 			return 0;
 		}
 

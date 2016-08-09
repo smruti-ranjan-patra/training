@@ -192,7 +192,9 @@ class AuthController extends Controller
 								$message->from('1234asdf56789@gmail.com', 'Laravel');
 								$message->to($request->email, 'Hello User')->subject('New Account');
 							});
-							
+
+							User::find($user_insert_id)->update(['is_active' => 1]);
+
 							return redirect('dashboard');
 						}						
 						else // User registering its own details
