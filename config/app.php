@@ -150,7 +150,6 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Thujohn\Twitter\TwitterServiceProvider::class,
-
         /*
          * Application Service Providers...
          */

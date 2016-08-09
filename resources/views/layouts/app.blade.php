@@ -25,7 +25,7 @@
 		}
 	</style>
 	<script>
-		var appUrl = "{{ Config::get('app.url') }}";
+		var appUrl = "{{ URL('/') }}" + '/';
 	</script>
 </head>
 <body id="app-layout">

@@ -3,7 +3,7 @@
 @section('title', 'Login')
 
 @section('paging')
-	<li>{!! Html::link('/home', 'Home') !!}</li>
+	<li>{!! Html::link(route('home'), 'Home') !!}</li>
 	<li>{!! Html::link('/register', 'Register') !!}</li>
 @endsection
 
@@ -19,8 +19,8 @@
 					<!-- Display Validation Errors -->
 					@include('common.errors')
 
-					<!-- New Task Form -->
-					 {!! Form::open(array('url' => route('do-login'), 'method' => 'POST', 'class' => 'form-horizontal','id'=>'login')) !!}
+					<!-- Normal Login Form -->
+					{!! Form::open(array('url' => route('do-login'), 'method' => 'POST', 'class' => 'form-horizontal','id'=>'login')) !!}
 
 						<!-- Email -->
 						<div class="form-group">
@@ -53,8 +53,23 @@
 								{!! Form::submit('Login', ['class' => 'btn btn-primary']) !!}
 						</div>
 
-						{!! Form::close() !!}
-					</form>
+					{!! Form::close() !!}
+				</div>
+
+				<hr>
+
+				<div class="panel-body">
+
+					<!-- Login from LinkedIn -->
+					{!! Form::open(array('url' => route('home'), 'method' => 'GET', 'class' => 'form-horizontal','id'=>'linkedin_login')) !!}
+
+						<!-- Login Button -->
+						<div class="form-group text-center">
+								{!! Form::submit('Login through LinkedIn', ['class' => 'btn btn-primary']) !!}
+						</div>
+
+					{!! Form::close() !!}
+
 				</div>
 			</div>
 		</div>

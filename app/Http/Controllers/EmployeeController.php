@@ -38,12 +38,14 @@ class EmployeeController extends Controller
 	public function delete(Request $request)
 	{
 
-		if(auth()->user()->id != $request->id)
+		if(auth()->user()->id == $request->id)
 		{
 			User::deleteRecord($request->id);
 		}
 
-		return redirect('details');
+		$request->session()->flush();
+		return redirect('login');
+		// return redirect('details');
 	}
 
 	/**
@@ -129,7 +131,7 @@ class EmployeeController extends Controller
 	*/
 	public static function displayAddress($data)
 	{
-		if($data === '' || $data === 0)
+		if($data === '' || $data === '0')
 		{
 			$display_string = '';
 		}

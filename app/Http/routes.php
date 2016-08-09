@@ -11,13 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-		return view('welcome');
-});
 
-Route::get('home', function () {
+
+Route::get('/', ['as' => 'home', function () {
 		return view('home');
-});
+}]);
+
 
 Route::group(['middleware' => 'user_access'], function ()
 {

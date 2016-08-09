@@ -14,6 +14,7 @@ use App\Models\RoleResourcePermission;
 use Auth;
 use Mail;
 use Hash;
+use Log;
 
 class AuthController extends Controller
 {
@@ -187,7 +188,7 @@ class AuthController extends Controller
 						{
 							$mail_text = 'Your new account has been created by ' . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' and your password is : ' . $request->password;
 
-							Mail::raw($mail_text, function ($message)
+							Mail::raw($mail_text, function ($message) use ($request)
 							{
 								$message->from('1234asdf56789@gmail.com', 'Laravel');
 								$message->to($request->email, 'Hello User')->subject('New Account');
@@ -204,7 +205,7 @@ class AuthController extends Controller
 							$key = User::find($user_insert_id)->key;
 							$url = config('constants.verification_path') . 'login/verify?key=' . $key;
 
-							Mail::send('email', ['url' => $url], function ($message)
+							Mail::send('email', ['url' => $url], function ($message) use ($request)
 							{
 								$message->from('1234asdf56789@gmail.com', 'Laravel');
 								$message->to($request->email, 'Hello User')->subject('Email Verification');
@@ -284,7 +285,7 @@ class AuthController extends Controller
 		}
 		else
 		{
-			return redirect('login')->with( 'redirect_error', 'Login Failed' );
+			return redirect('login')->with( 'redirect_error', 'Invalid email id or password provided' );
 		}
 	}
 
@@ -325,22 +326,10 @@ class AuthController extends Controller
 	*/
 	public function doResetPassword(Request $request)
 	{
-		$this->validate($request, [
-				'email' => 'required|email'
-		]);
-
-		$new_password = AuthController::randStrGen(8);
-
-		$mail_text = 'The new password for your email id - ' . $request->email . ' is  ' . $new_password;
-
-		Mail::raw($mail_text, function ($message)
-		{
-			$message->from('1234asdf56789@gmail.com', 'Laravel');
-			$message->to($request->email, 'Hello User')->subject('Reset Password');
-		});
-
 		try
 		{
+			$new_password = AuthController::randStrGen(8);
+
 			User::where('email', '=', $request->email)
 				->update(
 					[
@@ -354,13 +343,26 @@ class AuthController extends Controller
 						'key' => Hash::make( $user->id . $new_password )
 					]);
 
+			$this->validate($request, [
+					'email' => 'required|email'
+			]);
+
+			$mail_text = 'The new password for your email id - ' . $request->email . ' is  ' . $new_password;
+
+			Mail::raw($mail_text, function ($message) use ($request)
+			{
+				// global $request;
+				$message->from('1234asdf56789@gmail.com', 'Laravel');
+				$message->to($request->email, 'Hello User')->subject('Reset Password');
+			});
+
 			\Session::flash('flash_message', 'Your new password has been sent to the registered mail id');
 			return redirect('login');
 		}
 		catch(\Exception $e)
 		{
-			Log::error($e);
-			return redirect('reset-password')->with('db_insert_error', 'Please try again after sometime !');
+			Log::error('Reset Password error - ' . $e);
+			return redirect('reset-password')->with('db_insert_error', 'Invalid email id !');
 		}
 	}
 

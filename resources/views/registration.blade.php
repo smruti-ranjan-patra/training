@@ -4,7 +4,7 @@
 
 @section('paging')
 
-	<li>{!! Html::link('/home', 'Home') !!}</li>
+	<li>{!! Html::link(route('home'), 'Home') !!}</li>
 
 	@if(!(Auth::check()))
 		<li>{!! Html::link('/login', 'Login') !!}</li>
