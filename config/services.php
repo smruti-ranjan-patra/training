@@ -35,4 +35,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'linkedin' => [
+    'client_id' => '81qialyoutao21',
+    'client_secret' => '3HVaN2fjiCqvRtcp',
+    'redirect' => 'http://local.laravel.com/linkedin-callback',
+    ],
+
 ];

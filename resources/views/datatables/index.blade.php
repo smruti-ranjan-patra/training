@@ -2,12 +2,6 @@
 
 @section('title', 'Home')
 
-@section('paging')
-	<li>{!! Html::link('/dashboard', 'Dashboard') !!}</li>
-	<li>{!! Html::link('/edit', 'Edit') !!}</li>
-	<li>{!! Html::link('/logout', 'Log out') !!}</li>
-@endsection
-
 @section('content')
 	<table class="table table-bordered" id="users-table">
 			<thead>

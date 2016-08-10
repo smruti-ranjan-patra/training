@@ -15,6 +15,7 @@ use Auth;
 use Mail;
 use Hash;
 use Log;
+use Socialite;
 
 class AuthController extends Controller
 {
@@ -85,7 +86,7 @@ class AuthController extends Controller
 	/**
 	 * Show registration form
 	 *
- 	 * @param  Request  $request
+	 * @param  Request  $request
 	*/
 	public function register(Request $request)
 	{
@@ -424,6 +425,65 @@ class AuthController extends Controller
 		{
 			RoleResourcePermission::deleteData($request->id);
 		}
+	}
+
+	/**
+	 * Redirect the user to the LinkedIn authentication page.
+	 *
+	 * @return Response
+	 */
+	public function redirectToProvider()
+	{
+		return Socialite::driver('linkedin')->redirect();
+	}
+
+	/**
+	 * Obtain the user information from LinkedIn.
+	 *
+	 * @return Response
+	 */
+	public function handleProviderCallback()
+	{
+		$user = Socialite::driver('linkedin')->user();
+		// echo "<pre>";print_r($user);exit;
+
+		$email = $user['emailAddress'];
+		$first_name = $user['firstName'];
+		$last_name = $user['lastName'];
+		$password = env('DEFAULT_PASSWORD', '12341234');
+		$id = User::getId($email);
+
+		// Existing user
+		if($id != 0)
+		{
+			Auth::loginUsingId($id);
+			return redirect('dashboard');
+		}
+		else // Create User data for new user
+		{
+			$data = array(
+				'first_name' => $first_name,
+				'last_name' => $last_name,
+				'email' => $email,
+				'password' => $password
+				);
+
+			$new_user_id = User::store($data);
+			// dd($new_user_id);
+
+			// Successful insertion of data
+			if($new_user_id != 0)
+			{
+				User::imageUpload($new_user_id, '');
+				Auth::loginUsingId($new_user_id);
+				return redirect('dashboard');				
+			}
+			else //Unsuccessful insertion of data
+			{
+				return view('login', ['db_insert_error', 'Please try again after sometime']);
+			}
+		}
+
 	}
 
 }

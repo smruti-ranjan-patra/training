@@ -150,6 +150,8 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Thujohn\Twitter\TwitterServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -207,6 +209,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
         'Twitter' => Thujohn\Twitter\Facades\Twitter::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

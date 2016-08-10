@@ -39,7 +39,6 @@ Route::group(['middleware' => 'user_access'], function ()
 
 Route::get('twitter', 'EmployeeController@twitter');
 
-
 Route::get('register', 
 	[
 		'as' => 'register',
@@ -77,99 +76,20 @@ Route::get('reset-password', 'AuthController@resetPassword');
 
 Route::post('do-reset-password', 'AuthController@doResetPassword');
 
-
-/*Route::controller('datatables', 'DatatablesController', 
+Route::get('linkedin', 
 	[
-		'anyData'  => 'datatables.data',
-		'getIndex' => 'datatables'
-	]);*/
+		'as' => 'linkedin',
+		'uses' => 'AuthController@redirectToProvider'
+	]);
 
-// Route::get('datatables', ['uses' => 'DatatablesController@getIndex']);
+Route::get('linkedin-callback', 
+	[
+		'as' => 'linkedin-callback',
+		'uses' => 'AuthController@handleProviderCallback'
+	]);
 
-
-
-
-Route::get('calculator/{operation}/{val1?}/{val2?}', function ($operation, $val1='', $val2='')
-	{
-		if($val1 == '' || $val2 == '')
-		{
-			return 'Parameters missing !!!';
-		}
-		else if($operation == 'add')
-		{
-			add($val1, $val2);
-		}
-		else if($operation == 'subtract')
-		{
-			subtract($val1, $val2);
-		}
-		else if($operation == 'multiply')
-		{
-			multiply($val1, $val2);
-		}
-		else if($operation == 'division')
-		{
-			division($val1, $val2);
-		}
-		else
-		{
-			return 'Invalid Operation';
-		}
-	})->where(array('val1' => '^-?\d+(\.\d)?$', 'val2' => '^-?\d+(\.\d)?$'));
-
-function add($num1, $num2)
-{
-	$result = $num1 + $num2;
-	echo 'The result is ' . $result;
-}
-
-function subtract($num1, $num2)
-{
-	$result = $num1 - $num2;
-	echo 'The result is ' . $result;
-}
-
-function multiply($num1, $num2)
-{
-	$result = $num1 * $num2;
-	echo 'The result is ' . $result;
-}
-
-function division($num1, $num2)
-{
-	try
-	{
-		$result = $num1 / $num2;
-		echo 'The result is ' . $result;
-	}
-	catch(Exception $e)
-	{
-		echo 'Divide by zero not possible';
-	}
-}
-
-
-
-
-// Route::get('/', function () {
-// 	echo "Hi";
-//     return view('welcome');
-// });
-
-// Route::get('/', ['as' => 'profile', function () {
-//     return view('welcome');
-// }]);
-
-// Route::get('profile-1/{name}', function ($name) {
-//     		return 'Hello ' . $name;
-//        })->where('name', '[A-Za-z]+');
-
- Route::get('profile/{name?}', function ($name = 'Scott') {
-				return 'Hello ' . $name;
-			 })->where('name', '[A-Za-z]+');
-
-// Route::group(['prefix' => 'admin'], function () {
-//     Route::get('users', function ()    {
-//         // Matches The "/admin/users" URL
-//     });
-// });
+/*Route::get('get-linkedin-data', 
+	[
+		'as' => 'get-linkedin-data',
+		'uses' => 'AuthController@getLinkedinData'
+	])*/;

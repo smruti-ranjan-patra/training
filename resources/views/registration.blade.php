@@ -2,20 +2,6 @@
 
 @section('title', 'Registration')
 
-@section('paging')
-
-	<li>{!! Html::link(route('home'), 'Home') !!}</li>
-
-	@if(!(Auth::check()))
-		<li>{!! Html::link('/login', 'Login') !!}</li>
-	@endif
-
-	@if(Auth::check())
-		<li>{!! Html::link('/logout', 'Log out') !!}</li>
-	@endif
-	
-@endsection
-
 <?php
 
 	$id = 0;

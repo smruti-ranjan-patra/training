@@ -53,7 +53,7 @@ class User extends Model
 			$user = User::create(
 				[
 					'first_name' => $post_data['first_name'],
-					'middle_name' => $post_data['middle_name'],
+					'middle_name' => isset($post_data['middle_name']) ? $post_data['middle_name'] : '',
 					'last_name' => $post_data['last_name'],
 					'email' => $post_data['email'],
 					'password' => Hash::make($post_data['password']),
@@ -158,5 +158,23 @@ class User extends Model
 	public static function retrieveData ($id)
 	{
 		return User::with('address')->where('id', $id)->get();
+	}
+
+	/**
+	 * To check for existing user
+	 *
+	 * @param  string  $email
+	*/
+	public static function getId ($email)
+	{
+		try
+		{
+			return User::where('email', $email)->first()->id;
+		}
+		catch(\Exception $e)
+		{
+			Log::error($e);
+			return 0;
+		}
 	}
 }

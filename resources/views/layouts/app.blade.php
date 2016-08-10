@@ -32,7 +32,24 @@
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<ul class="nav navbar-nav">
-				@yield('paging')
+				<!-- @yield('paging') -->
+				
+				@if(Auth::check())
+					<li>{!! Html::link('/dashboard', 'Dashboard') !!}</li>
+					<li>{!! Html::link('/details', 'Details') !!}</li>
+
+					@if( Auth::user()->role_id == 1 )
+						<li>{!! Html::link('/add_user', 'Add User') !!}</li>
+						<li>{!! Html::link('/permission', 'Permission Manager') !!}</li>
+					@endif
+
+					<li>{!! Html::link('/logout', 'Log out') !!}</li>
+				@else
+					<li>{!! Html::link(route('home'), 'Home') !!}</li>
+					<li>{!! Html::link('/register', 'Register') !!}</li>
+					<li>{!! Html::link('/login', 'Login') !!}</li>
+				@endif
+
 			</ul>
 		</div>
 	</nav>

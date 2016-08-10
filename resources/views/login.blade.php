@@ -2,11 +2,6 @@
 
 @section('title', 'Login')
 
-@section('paging')
-	<li>{!! Html::link(route('home'), 'Home') !!}</li>
-	<li>{!! Html::link('/register', 'Register') !!}</li>
-@endsection
-
 @section('content')
 	<div class="container">
 		<div class="col-sm-offset-2 col-sm-8">
@@ -44,7 +39,7 @@
 							<div class="col-sm-3">
 							</div>
 							
-							{!! HTML::link('/reset-password', 'Reset Password', array('id' => 'reset_password', 'class' => 'col-sm-6')) !!}
+							{!! Html::link('/reset-password', 'Reset Password', array('id' => 'reset_password', 'class' => 'col-sm-6')) !!}
 							
 						</div>
 
@@ -58,10 +53,8 @@
 
 				<hr>
 
-				<div class="panel-body">
-
 					<!-- Login from LinkedIn -->
-					{!! Form::open(array('url' => route('home'), 'method' => 'GET', 'class' => 'form-horizontal','id'=>'linkedin_login')) !!}
+					{!! Form::open(array('url' => route('linkedin'), 'method' => 'GET', 'class' => 'form-horizontal','id'=>'linkedin_login')) !!}
 
 						<!-- Login Button -->
 						<div class="form-group text-center">

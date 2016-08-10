@@ -2,17 +2,6 @@
 
 @section('title', 'Login')
 
-@section('paging')
-	<li>{!! Html::link('/details', 'Details') !!}</li>
-	<li>{!! Html::link('/add_user', 'Add User') !!}</li>
-
-	@if( Auth::user()->role_id == 1 )
-		<li>{!! Html::link('/permission', 'Permission Manager') !!}</li>
-	@endif
-
-	<li>{!! Html::link('/logout', 'Log out') !!}</li>
-@endsection
-
 @section('content')
 
 	<div class="table-responsive">
@@ -33,16 +22,6 @@
 			<tbody>					
 
 				@foreach($roles as $role)
-
-					@if($role->role_name == 'admin')
-
-						<?php
-							
-							continue;
-
-						?>
-
-					@endif
 
 					@foreach($resources as $resource)
 						<tr>
