@@ -76,15 +76,27 @@ Route::get('reset-password', 'AuthController@resetPassword');
 
 Route::post('do-reset-password', 'AuthController@doResetPassword');
 
-Route::get('linkedin', 
+Route::get('linkedin-login', 
 	[
-		'as' => 'linkedin',
-		'uses' => 'AuthController@redirectToProvider'
+		'as' => 'linkedin-login',
+		'uses' => 'AuthController@redirectToProviderLinkedin'
 	]);
 
-Route::get('linkedin-callback', 
+/*Route::get('linkedin-callback', 
 	[
 		'as' => 'linkedin-callback',
+		'uses' => 'AuthController@handleProviderCallbackLinkedin'
+	]);*/
+
+Route::get('twitter-login', 
+	[
+		'as' => 'twitter-login',
+		'uses' => 'AuthController@redirectToProviderTwitter'
+	]);
+
+Route::get('callback', 
+	[
+		'as' => 'callback',
 		'uses' => 'AuthController@handleProviderCallback'
 	]);
 

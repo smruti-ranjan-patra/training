@@ -34,6 +34,9 @@ class User extends Model
 
 	/**
 	 * Get the address that owns the user.
+	 *
+	 * @param  void
+	 * @return mixed
 	 */
 	public function address()
 	{
@@ -41,10 +44,10 @@ class User extends Model
 	}
 
 	/**
-	 * To insert data into users tabel.
+	 * To insert data into users table.
 	 *
 	 * @param  array $post_data
-	 * @return void
+	 * @return integer
 	 */
 	public static function store ($post_data)
 	{
@@ -54,7 +57,7 @@ class User extends Model
 				[
 					'first_name' => $post_data['first_name'],
 					'middle_name' => isset($post_data['middle_name']) ? $post_data['middle_name'] : '',
-					'last_name' => $post_data['last_name'],
+					'last_name' => isset($post_data['last_name']) ? $post_data['last_name'] : '',
 					'email' => $post_data['email'],
 					'password' => Hash::make($post_data['password']),
 					'twitter_name' => isset($post_data['twitter_name']) ? $post_data['twitter_name'] : '',
@@ -95,6 +98,8 @@ class User extends Model
 	 * To Update all data
 	 *
 	 * @param  string  $key
+	 *
+	 * @return void
 	*/
 	public static function updateUser ($post_data)
 	{
@@ -123,6 +128,7 @@ class User extends Model
 	 * To delete data from users tabel.
 	 *
 	 * @param  integer $id
+	 *
 	 * @return void
 	 */
 	public static function deleteRecord ($id)
@@ -134,6 +140,8 @@ class User extends Model
 	 * To verify though mail
 	 *
 	 * @param  string  $key
+	 *
+	 * @return integer
 	*/
 	public static function verifyLink ($key)
 	{
@@ -153,7 +161,9 @@ class User extends Model
 	/**
 	 * To select all data
 	 *
-	 * @param  string  $key
+	 * @param  integer  $id	 
+	 *
+	 * @return array
 	*/
 	public static function retrieveData ($id)
 	{
@@ -164,6 +174,8 @@ class User extends Model
 	 * To check for existing user
 	 *
 	 * @param  string  $email
+	 *
+	 * @return integer
 	*/
 	public static function getId ($email)
 	{

@@ -36,9 +36,15 @@ return [
     ],
 
     'linkedin' => [
-    'client_id' => '81qialyoutao21',
-    'client_secret' => '3HVaN2fjiCqvRtcp',
-    'redirect' => 'http://local.laravel.com/linkedin-callback',
+        'client_id' => '81qialyoutao21',
+        'client_secret' => '3HVaN2fjiCqvRtcp',
+        'redirect' => 'http://local.laravel.com/callback?type=linkedin',
+    ],
+
+    'twitter' => [
+        'client_id' => 'cqpLUGFTLnUI8IqastrAuMA8H',
+        'client_secret' => '6auOmkIxi43kCu8yUSeQlxXxVVrtuPyIBuQoBjsIgofLYELero',
+        'redirect' => 'http://local.laravel.com/callback?type=twitter',
     ],
 
 ];

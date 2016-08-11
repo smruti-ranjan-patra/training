@@ -27,12 +27,21 @@ class Address extends Model
 
 	/**
 	 * Get the user that owns the address.
+	 *
+	 * @param  void
+	 * @return mixed
 	 */
 	public function user()
 	{
 		return $this->belongsTo('App\Models\User');
 	}
 
+	/**
+	 * To insert data into address table.
+	 *
+	 * @param  array $post_data
+	 * @return integer
+	 */
 	public static function store($post_data)
 	{
 		try
@@ -75,7 +84,8 @@ class Address extends Model
 	/**
 	 * To Update all data
 	 *
-	 * @param  string  $key
+	 * @param  array $post_data
+	 * @return void
 	*/
 	public static function updateAddress ($post_data)
 	{
@@ -107,7 +117,7 @@ class Address extends Model
 	/**
 	 * To delete data from address tabel.
 	 *
-	 * @param  array $post_data
+	 * @param  integer $id
 	 * @return void
 	 */
 	public static function delete_record ($id)

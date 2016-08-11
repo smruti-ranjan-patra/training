@@ -24,9 +24,7 @@
 			margin-right: 6px;
 		}
 	</style>
-	<script>
-		var appUrl = "{{ URL('/') }}" + '/';
-	</script>
+
 </head>
 <body id="app-layout">
 	<nav class="navbar navbar-inverse">
@@ -63,5 +61,10 @@
 
 	<!-- JavaScripts -->
 	@yield('js-css')
+
+	<script>
+		var appUrl = "{{ URL('/') }}" + '/';
+		var pic_link = "{{ asset('images/profile_pic') . '/'}}";
+	</script>
 </body>
 </html>

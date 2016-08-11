@@ -32,7 +32,7 @@ $(function()
 
 			success:function(response)
 			{
-				$("#profile_pic").html('<div style="text-align: center"><img src="././images/profile_pic/' + response.photo + '" alt="No image found" style="border-radius:20%;width:120px;height:120px;"></div>');
+				$("#profile_pic").html('<div style="text-align: center"><img src="' + pic_link + response.photo + '" alt="No image found" style="border-radius:20%;width:120px;height:120px;"></div>');
 				$("#name").html(response.full_name);
 				$("#employment").html(response.employment);
 				$("#employer").html(response.employer);

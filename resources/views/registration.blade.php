@@ -60,15 +60,15 @@
 		$r_street = $emp_data[0]->address[0]->street;
 		$r_city = $emp_data[0]->address[0]->city;
 		$r_state = $emp_data[0]->address[0]->state;
-		$r_zip = $emp_data[0]->address[0]->zip;
-		$r_phone = $emp_data[0]->address[0]->phone;
-		$r_fax = $emp_data[0]->address[0]->fax;
+		$r_zip = ($emp_data[0]->address[0]->zip == 0) ? '' : $emp_data[0]->address[0]->zip;
+		$r_phone = ($emp_data[0]->address[0]->phone == 0) ? '' : $emp_data[0]->address[0]->phone == 0;
+		$r_fax = ($emp_data[0]->address[0]->fax == 0) ? '' : $emp_data[0]->address[0]->fax;
 		$o_street = $emp_data[0]->address[1]->street;
 		$o_city = $emp_data[0]->address[1]->city;
 		$o_state = $emp_data[0]->address[1]->state;
-		$o_zip = $emp_data[0]->address[1]->zip;
-		$o_phone = $emp_data[0]->address[1]->phone;
-		$o_fax = $emp_data[0]->address[1]->fax;
+		$o_zip = ($emp_data[0]->address[1]->zip == 0) ? '' : $emp_data[0]->address[1]->zip ;
+		$o_phone = ($emp_data[0]->address[1]->phone == 0) ? '' : $emp_data[0]->address[1]->phone == 0;
+		$o_fax = ($emp_data[0]->address[1]->fax == 0) ? '' : $emp_data[0]->address[1]->fax;
 		$notes = $emp_data[0]->extra_note;
 		$emp_comm_medium = explode(" ", $emp_data[0]->comm_id);
 	}

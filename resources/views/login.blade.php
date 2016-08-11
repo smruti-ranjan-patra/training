@@ -51,19 +51,24 @@
 					{!! Form::close() !!}
 				</div>
 
-				<hr>
-
-					<!-- Login from LinkedIn -->
-					{!! Form::open(array('url' => route('linkedin'), 'method' => 'GET', 'class' => 'form-horizontal','id'=>'linkedin_login')) !!}
-
-						<!-- Login Button -->
-						<div class="form-group text-center">
-								{!! Form::submit('Login through LinkedIn', ['class' => 'btn btn-primary']) !!}
-						</div>
-
-					{!! Form::close() !!}
-
+				<div class="row">
+					<div>
+						<div class="col-xs-5"><hr></div>
+						<div class="col-xs-2 form-group text-center" style="margin-top: 10px;">OR</div>
+						<div class="col-xs-5"><hr></div>
+					</div>
 				</div>
+
+				<!-- Login from LinkedIn -->
+				<div class="form-group text-center">
+				<a href="{{ route('linkedin-login') }}"><img src="/images/li1.png" style="width:215px;height:41px;"></a>
+				</div>
+
+				<!-- Login from Twitter -->
+				<div class="form-group text-center">
+				<a href="{{ route('twitter-login') }}"><img src="/images/tt2.png" style="width:220px;height:44px;"></a>
+				</div>
+
 			</div>
 		</div>
 	</div>
