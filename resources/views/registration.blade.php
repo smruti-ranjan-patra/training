@@ -349,7 +349,7 @@
 								</div>
 							</div>
 
-							<!-- Preferred Communicatio -->
+							<!-- Preferred Communication -->
 							<div class="row form-group">
 								{!! Form::label('comm', 'Preferred Communication Medium :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
 
@@ -379,7 +379,11 @@
 								{!! Form::submit('Update', ['class' => 'btn btn-primary']) !!}
 							@endif
 
+							{!! Form::reset('Reset', ['class' => 'btn btn-danger']) !!}
+
 						</div>
+
+						
 					{!! Form::close() !!}
 				</div>
 			</div>

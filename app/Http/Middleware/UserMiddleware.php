@@ -34,20 +34,29 @@ class UserMiddleware
 				}
 			}
 
-			if($page == 'view' || $page == 'edit' || $page == 'delete')
+			elseif($page == 'view' || $page == 'edit' || $page == 'delete')
 			{
-				if(!UserMiddleware::isAllowed($page))
+				if(UserMiddleware::isAllowed($page))
 				{
 					if(Auth::user()->id == $request->id)
 					{
 						return $next($request);
 					}
-
+					else
+					{
+						return redirect('dashboard')->with( 'redirect_error', 'You dont have the specified permission' );
+					}
+				}
+				else
+				{
 					return redirect('dashboard')->with( 'redirect_error', 'You dont have the specified permission' );
 				}
 			}
+			else
+			{
+				return $next($request);				
+			}
 
-			return $next($request);
 		}
 		else
 		{
@@ -72,7 +81,7 @@ class UserMiddleware
 										->where('fk_permission', '=', $p_id)
 										->count();
 
-			if($rrp)
+			if($rrp > 0)
 			{
 				return true;
 			}

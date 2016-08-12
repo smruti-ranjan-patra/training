@@ -41,11 +41,18 @@
 						<li>{!! Html::link('/permission', 'Permission Manager') !!}</li>
 					@endif
 
-					<li>{!! Html::link('/logout', 'Log out') !!}</li>
 				@else
 					<li>{!! Html::link(route('home'), 'Home') !!}</li>
 					<li>{!! Html::link('/register', 'Register') !!}</li>
 					<li>{!! Html::link('/login', 'Login') !!}</li>
+				@endif
+
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+
+				@if(Auth::check())
+					<li>{!! Html::link('/logout', 'Log out') !!}</li>
 				@endif
 
 			</ul>
@@ -65,6 +72,15 @@
 	<script>
 		var appUrl = "{{ URL('/') }}" + '/';
 		var pic_link = "{{ asset('images/profile_pic') . '/'}}";
+	</script>
+	<script type="text/javascript">
+		$.ajaxSetup
+		({
+			headers: 
+			{
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		});
 	</script>
 </body>
 </html>

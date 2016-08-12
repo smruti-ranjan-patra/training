@@ -40,7 +40,7 @@ $(function()
 				$("#off_add").html(response.off_add);
 				$("#comm_medium").html(response.comm_medium);
 				$("#myModal").modal({backdrop: 'static', keyboard: false, show: true});
-			}	
+			}
 		});
 	});
 	$(document).on('change', '#select_tweet_num', function()

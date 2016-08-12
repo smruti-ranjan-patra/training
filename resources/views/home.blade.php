@@ -10,8 +10,8 @@
 		}
 	</style>
 	<div class="container">
-			<div style="text-align:center; margin-top:100px">
-				<h1>Welcome to the Profile App</h1>
-			</div>
+		<div style="text-align:center; margin-top:100px">
+			<h1>Welcome to the Profile App</h1>
+		</div>
 	</div>
 @endsection

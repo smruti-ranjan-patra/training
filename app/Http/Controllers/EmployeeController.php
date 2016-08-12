@@ -57,6 +57,8 @@ class EmployeeController extends Controller
 	*/
 	public function view(Request $request)
 	{
+		// echo "<pre>"; print_r($request); exit;
+		dd($request);
 		$emp_data = User::retrieveData($request->id);
 		$comm_medium_tbl = CommunicationMedium::retrieveData();
 

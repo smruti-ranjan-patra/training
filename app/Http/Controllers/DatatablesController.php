@@ -60,13 +60,13 @@ class DatatablesController extends Controller
 										$flag++;
 									}
 
-									if(Auth::user()->role_id == 1 || (Session::has('can_view') && Session::get('can_edit') == 1 && $query->id == Auth::user()->id))
+									if(Auth::user()->role_id == 1 || (Session::has('can_edit') && Session::get('can_edit') == 1 && $query->id == Auth::user()->id))
 									{
 										$display_string .= '<li><a href="edit?id=' . $query->id .'">Edit</a></li>';
 										$flag++;
 									}
 
-									if(Auth::user()->role_id == 1 || (Session::has('can_delete') && Session::get('can_edit') == 1 && $query->id == Auth::user()->id))
+									if(Auth::user()->role_id == 1 || (Session::has('can_delete') && Session::get('can_delete') == 1 && $query->id == Auth::user()->id))
 									{
 										$display_string .= '<li><a href="delete?id=' . $query->id . '">Delete</a></li>';
 										$flag++;
