@@ -38,14 +38,20 @@ class EmployeeController extends Controller
 	public function delete(Request $request)
 	{
 
-		if(auth()->user()->id == $request->id)
+		if(auth()->user()->id == $request->id || Auth::user()->role_id == 1)
 		{
 			User::deleteRecord($request->id);
 		}
 
-		$request->session()->flush();
-		return redirect('login');
-		// return redirect('details');
+		if(Auth::user()->role_id == 1)
+		{
+			return redirect('details');
+		}
+		else
+		{
+			$request->session()->flush();
+			return redirect('login');
+		}
 	}
 
 	/**
@@ -57,8 +63,8 @@ class EmployeeController extends Controller
 	*/
 	public function view(Request $request)
 	{
-		// echo "<pre>"; print_r($request); exit;
-		dd($request);
+		// dd($request->isXmlHttpRequest());
+		// dd($request->ajax());
 		$emp_data = User::retrieveData($request->id);
 		$comm_medium_tbl = CommunicationMedium::retrieveData();
 

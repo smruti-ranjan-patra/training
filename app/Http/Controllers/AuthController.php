@@ -285,7 +285,7 @@ class AuthController extends Controller
 			'password' => 'required|min:8|max:12'
 		], $messages);
 
-		if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_active' => 1]))
+		if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_active' => 1]))
 		{
 			return redirect('dashboard');
 		}

@@ -1,7 +1,7 @@
 $(function()
 {
 	var user_id;
-	var t = $('#users-table').DataTable(
+	$('#users-table').DataTable(
 	{
 		processing: true,
 		serverSide: true,

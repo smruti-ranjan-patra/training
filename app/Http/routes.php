@@ -82,12 +82,6 @@ Route::get('linkedin-login',
 		'uses' => 'AuthController@redirectToProviderLinkedin'
 	]);
 
-/*Route::get('linkedin-callback', 
-	[
-		'as' => 'linkedin-callback',
-		'uses' => 'AuthController@handleProviderCallbackLinkedin'
-	]);*/
-
 Route::get('twitter-login', 
 	[
 		'as' => 'twitter-login',
@@ -100,8 +94,11 @@ Route::get('callback',
 		'uses' => 'AuthController@handleProviderCallback'
 	]);
 
-/*Route::get('get-linkedin-data', 
+Route::post('users/{id?}', 
 	[
-		'as' => 'get-linkedin-data',
-		'uses' => 'AuthController@getLinkedinData'
-	])*/;
+		'uses' => 'ApiController@getUsers',
+		function ($id = 0)
+		{
+			
+		}
+	]);

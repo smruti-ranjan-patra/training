@@ -15,3 +15,8 @@
 		</div>
 	</div>
 @endsection
+
+@section('js-css')
+	<!-- jQuery -->
+	<script src="//code.jquery.com/jquery.js"></script>
+@endsection

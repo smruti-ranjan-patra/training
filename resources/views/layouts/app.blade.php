@@ -36,7 +36,7 @@
 					<li>{!! Html::link('/dashboard', 'Dashboard') !!}</li>
 					<li>{!! Html::link('/details', 'Details') !!}</li>
 
-					@if( Auth::user()->role_id == 1 )
+					@if(Auth::user()->role_id == 1)
 						<li>{!! Html::link('/add_user', 'Add User') !!}</li>
 						<li>{!! Html::link('/permission', 'Permission Manager') !!}</li>
 					@endif
