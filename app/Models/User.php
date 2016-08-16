@@ -159,7 +159,7 @@ class User extends Model
 	}
 
 	/**
-	 * To select all data
+	 * To select all data for particular id
 	 *
 	 * @param  integer  $id	 
 	 *
@@ -168,6 +168,18 @@ class User extends Model
 	public static function retrieveData ($id)
 	{
 		return User::with('address')->where('id', $id)->get();
+	}
+
+	/**
+	 * To select all data for all users
+	 *
+	 * @param  void 
+	 *
+	 * @return array
+	*/
+	public static function retrieveAllData ()
+	{
+		return User::with('address')->get();
 	}
 
 	/**

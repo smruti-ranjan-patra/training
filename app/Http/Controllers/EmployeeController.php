@@ -63,8 +63,6 @@ class EmployeeController extends Controller
 	*/
 	public function view(Request $request)
 	{
-		// dd($request->isXmlHttpRequest());
-		// dd($request->ajax());
 		$emp_data = User::retrieveData($request->id);
 		$comm_medium_tbl = CommunicationMedium::retrieveData();
 
@@ -73,24 +71,11 @@ class EmployeeController extends Controller
 		$r_state = config( 'constants.state_list.' . $emp_data[0]->address[0]->state);
 		$o_state = config( 'constants.state_list.' . $emp_data[0]->address[1]->state);
 
-		$res_add = '';
-		$off_add = '';
+		$emp_data[0]->address[0]->state = $r_state;
+		$emp_data[0]->address[1]->state = $o_state;
 
-		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->street);
-		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->city);
-		$res_add .= EmployeeController::displayAddress($r_state);
-		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->zip);
-		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->phone);
-		$res_add .= EmployeeController::displayAddress($emp_data[0]->address[0]->fax);
-		$res_add = rtrim($res_add, ", ");
-
-		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->street);
-		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->city);
-		$off_add .= EmployeeController::displayAddress($o_state);
-		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->zip);
-		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->phone);
-		$off_add .= EmployeeController::displayAddress($emp_data[0]->address[1]->fax);
-		$off_add = rtrim($off_add, ", ");
+		$res_add = EmployeeController::displayAddress($emp_data[0], 'residence');
+		$off_add = EmployeeController::displayAddress($emp_data[0], 'office');
 
 		if($emp_data[0]->photo == '')
 		{
@@ -137,17 +122,27 @@ class EmployeeController extends Controller
 	 *
 	 * @return string $display_string
 	*/
-	public static function displayAddress($data)
+	public static function displayAddress($employee, $type = 'residence')
 	{
-		if($data === '' || $data === '0')
+		$display_string = '';
+		$flag = ($type == 'residence') ? 0 : 1;
+		$fields = ['street', 'city', 'state', 'zip', 'phone', 'fax'];
+		
+		foreach($fields as $field)
 		{
-			$display_string = '';
-		}
-		else
-		{
-			$display_string = $data . ', ';
+			$data = $employee->address[$flag]->$field;
+
+			if($data === '' || $data === '0')
+			{
+				$display_string .= '';
+			}
+			else
+			{
+				$display_string .= $data . ', ';
+			}
 		}
 
+		$display_string = rtrim($display_string, ", ");
 		return $display_string;
 	}
 
