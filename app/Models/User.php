@@ -171,18 +171,6 @@ class User extends Model
 	}
 
 	/**
-	 * To select all data for all users
-	 *
-	 * @param  void 
-	 *
-	 * @return array
-	*/
-	public static function retrieveAllData ()
-	{
-		return User::with('address')->get();
-	}
-
-	/**
 	 * To check for existing user
 	 *
 	 * @param  string  $email

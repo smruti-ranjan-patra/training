@@ -23,17 +23,16 @@ Route::group(['middleware' => 'user_access'], function ()
 	Route::get('dashboard', 
 		[
 			'as' => 'dashboard',
-			'uses' => 'DashBoardController@dashboard',
-			'middleware' => 'csrf'
+			'uses' => 'DashBoardController@dashboard'
 		]);
 
-	Route::get('details', ['uses' => 'DatatablesController@getIndex', 'middleware' => 'csrf']);
-	Route::get('edit', ['uses' => 'EmployeeController@edit', 'middleware' => 'csrf']);
-	Route::get('delete', ['uses' => 'EmployeeController@delete', 'middleware' => 'csrf']);
-	Route::get('view', ['uses' => 'EmployeeController@view', 'middleware' => 'csrf']);
-	Route::get('add_user', ['uses' => 'AuthController@register', 'middleware' => 'csrf']);
-	Route::get('permission', ['uses' => 'AuthController@displayPermissionManager', 'middleware' => 'csrf']);
-	Route::get('change_permission', ['uses' => 'AuthController@changePermission', 'middleware' => 'csrf']);
+	Route::get('details', ['uses' => 'DatatablesController@getIndex']);
+	Route::get('edit', ['uses' => 'EmployeeController@edit']);
+	Route::get('delete', ['uses' => 'EmployeeController@delete']);
+	Route::get('view', ['uses' => 'EmployeeController@view']);
+	Route::get('add_user', ['uses' => 'AuthController@register']);
+	Route::get('permission', ['uses' => 'AuthController@displayPermissionManager']);
+	Route::get('change_permission', ['uses' => 'AuthController@changePermission']);
 
 
 });
@@ -95,11 +94,8 @@ Route::get('callback',
 		'uses' => 'AuthController@handleProviderCallback'
 	]);
 
-Route::post('users/{id?}', 
-	[	'middleware' => 'api',
-		'uses' => 'ApiController@getUsers',
-		function ($id = 0)
-		{
-
-		}
-	]);
+/*Route::post('api/users/{id?}', 
+	[	
+		'middleware' => 'api',
+		'uses' => 'ApiController@getUsers'
+	]);*/
