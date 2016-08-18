@@ -11,9 +11,8 @@
 |
 */
 
-
-
-Route::get('/', ['as' => 'home', function () {
+Route::get('/', ['as' => 'home', function ()
+{
 		return view('home');
 }]);
 
@@ -33,8 +32,6 @@ Route::group(['middleware' => 'user_access'], function ()
 	Route::get('add_user', ['uses' => 'AuthController@register']);
 	Route::get('permission', ['uses' => 'AuthController@displayPermissionManager']);
 	Route::get('change_permission', ['uses' => 'AuthController@changePermission']);
-
-
 });
 
 Route::get('twitter', 'EmployeeController@twitter');
@@ -93,9 +90,3 @@ Route::get('callback',
 		'as' => 'callback',
 		'uses' => 'AuthController@handleProviderCallback'
 	]);
-
-/*Route::post('api/users/{id?}', 
-	[	
-		'middleware' => 'api',
-		'uses' => 'ApiController@getUsers'
-	]);*/
