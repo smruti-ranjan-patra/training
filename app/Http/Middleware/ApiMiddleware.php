@@ -22,24 +22,26 @@ class ApiMiddleware
 		$password = isset($request->password) ? $request->password : '';
 
 		$messages = [
-			'email.required' => 'Email is required',
+			'email.required' => 'Email id is required',
 			'email.email' => 'Invalid email id',
 			'password.required' => 'Password is required',
 			'limit.numeric' => 'Invalid limit provided, only numbers accepted',
-			'limit.min' => 'Limit can not be negative'
-
+			'limit.min' => 'Limit can not be negative',
+			'offset.numeric' => 'Invalid offset provided, only numbers accepted',
+			'name.alpha' => 'Name must can contain only alphabets'
 		];
 
 		$validator = Validator::make($request->all(), [
 			'email' => 'required|email',
 			'password' => 'required',
 			'limit' => 'numeric|min:0',
-			'offset' => 'numeric'
+			'offset' => 'numeric',
+			'name' => 'alpha'
 		], $messages);
 
 		if($validator->fails())
 		{
-			return response()->json(['error' => 401, 'message' => $validator->messages()], 401);
+			return response()->json(['error' => 401, 'message' => $validator->messages()->all()], 401);
 		}
 
 		if(Auth::once(['email' => $email, 'password' => $password, 'is_active' => 1]))

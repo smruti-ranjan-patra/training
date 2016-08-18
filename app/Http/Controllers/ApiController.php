@@ -24,15 +24,20 @@ class ApiController extends Controller
 	{
 		$email = isset($request->email) ? $request->email : '';
 		$password = isset($request->password) ? $request->password : '';
-		$limit = isset($request->limit) ? $request->limit : 5;
+		$limit = isset($request->limit) ? $request->limit : User::get()->count();
 		$offset = isset($request->offset) ? $request->offset : 0;
+		$name = isset($request->name) ? $request->name : '';
 
 		$comm_medium_tbl = CommunicationMedium::retrieveData();
 		$json = array();
 
 		if($request->id === 0 || $request->id === null)
 		{
-			$user_data = User::with('address')->take($limit)->skip($offset)->get();
+			$user_data = User::with('address')
+								->where('first_name', 'LIKE', '%'.$name.'%')
+								->take($limit)
+								->skip($offset)
+								->get();
 		}
 		else
 		{
@@ -54,18 +59,18 @@ class ApiController extends Controller
 			$json[$i]['email'] = $value->email;
 			$json[$i]['dob'] = date("jS M Y", strtotime($value->dob));
 			$json[$i]['twitter_name'] = $value->twitter_name;
-			$json[$i]['residence_address']['street'] = $value->address[0]->street;
-			$json[$i]['residence_address']['city'] = $value->address[0]->city;
-			$json[$i]['residence_address']['state'] = config( 'constants.state_list.' . $value->address[0]->state);
-			$json[$i]['residence_address']['zip'] = ApiController::displayNumbers($value->address[0]->zip);
-			$json[$i]['residence_address']['phone'] = ApiController::displayNumbers($value->address[0]->phone);
-			$json[$i]['residence_address']['fax'] = ApiController::displayNumbers($value->address[0]->fax);
-			$json[$i]['office_address']['street'] = $value->address[1]->street;
-			$json[$i]['office_address']['city'] = $value->address[1]->city;
-			$json[$i]['office_address']['state'] = config( 'constants.state_list.' . $value->address[1]->state);
-			$json[$i]['office_address']['zip'] = ApiController::displayNumbers($value->address[1]->zip);
-			$json[$i]['office_address']['phone'] = ApiController::displayNumbers($value->address[1]->phone);
-			$json[$i]['office_address']['fax'] = ApiController::displayNumbers($value->address[1]->fax);
+			$json[$i]['address']['residence']['street'] = $value->address[0]->street;
+			$json[$i]['address']['residence']['city'] = $value->address[0]->city;
+			$json[$i]['address']['residence']['state'] = config( 'constants.state_list.' . $value->address[0]->state);
+			$json[$i]['address']['residence']['zip'] = ApiController::displayNumbers($value->address[0]->zip);
+			$json[$i]['address']['residence']['phone'] = ApiController::displayNumbers($value->address[0]->phone);
+			$json[$i]['address']['residence']['fax'] = ApiController::displayNumbers($value->address[0]->fax);
+			$json[$i]['address']['office']['street'] = $value->address[1]->street;
+			$json[$i]['address']['office']['city'] = $value->address[1]->city;
+			$json[$i]['address']['office']['state'] = config( 'constants.state_list.' . $value->address[1]->state);
+			$json[$i]['address']['office']['zip'] = ApiController::displayNumbers($value->address[1]->zip);
+			$json[$i]['address']['office']['phone'] = ApiController::displayNumbers($value->address[1]->phone);
+			$json[$i]['address']['office']['fax'] = ApiController::displayNumbers($value->address[1]->fax);
 
 			if($value->photo == '')
 			{
@@ -100,7 +105,14 @@ class ApiController extends Controller
 			$i++;
 		}
 
-		return response()->json(['total_users' => $i,'users' => $json]);
+		if($limit == User::get()->count())
+		{
+			return response()->json(['total_users' => User::get()->count(), 'displaying_users' => count($json),'users' => $json]);
+		}
+		else
+		{
+			return response()->json(['total_users' => User::get()->count(), 'displaying_users' => count($json), 'users' => $json]);
+		}
 	}
 
 	/**
