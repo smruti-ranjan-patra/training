@@ -2,22 +2,22 @@
 
 Route::group(['prefix' => 'api/v1/', 'middleware' => 'api_access'], function ()
 {
-	Route::post('users/{id?}', 
+	Route::post('users/details/{id?}', 
 	[
 		'middleware' => 'api',
 		'uses' => 'ApiController@getUsers'
 	]);
-	Route::post('create_users', 
+	Route::post('users/create', 
 	[
 		'middleware' => 'api',
 		'uses' => 'ApiController@createUsers'
 	]);
-	Route::post('update_users/{id}', 
+	Route::post('users/update/{id}', 
 	[
 		'middleware' => 'api',
 		'uses' => 'ApiController@updateUsers'
 	]);
-	Route::post('delete_users/{id}', 
+	Route::post('users/delete/{id}', 
 	[
 		'middleware' => 'api',
 		'uses' => 'ApiController@deleteUsers'
