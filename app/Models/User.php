@@ -79,8 +79,6 @@ class User extends Model
 			Log::error('user table create data : '.$e);
 			return 0;
 		}
-
-		// Address::create();
 	}
 
 	/**
@@ -147,8 +145,9 @@ class User extends Model
 	{
 		try
 		{
-			$user = User::where('key', $key)->first();
-			User::find($user->id)->update(['is_active' => 1]);
+			User::where('key', $key)
+				->first()
+				->update(['is_active' => 1]);
 			return 1;
 		}
 		catch(\Exception $e)
@@ -161,7 +160,7 @@ class User extends Model
 	/**
 	 * To select all data for particular id
 	 *
-	 * @param  integer  $id	 
+	 * @param  integer  $id  
 	 *
 	 * @return array
 	*/

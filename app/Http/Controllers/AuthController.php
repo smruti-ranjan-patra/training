@@ -182,10 +182,10 @@ class AuthController extends Controller
 				if($user_insert_id)
 				{
 					$data['id'] = $user_insert_id;
-					$address_insert_success = Address::store($data);
+					$address_insert_status = Address::store($data);
 
 					// Successful insertion of data in address table
-					if($address_insert_success == 1)
+					if($address_insert_status == 1)
 					{
 						// Adding User by Admin
 						if(auth()->user() != null)
@@ -488,10 +488,10 @@ class AuthController extends Controller
 			{
 				User::imageUpload($new_user_id, '');
 				$address_data = array('id' => $new_user_id);
-				$address_insert_success = Address::store($address_data);
+				$address_insert_status = Address::store($address_data);
 
 				// Successful insertion of data in address table
-				if($address_insert_success != 0)
+				if($address_insert_status != 0)
 				{
 					Auth::loginUsingId($new_user_id);
 					return redirect('dashboard');
@@ -582,10 +582,10 @@ class AuthController extends Controller
 			{
 				User::imageUpload($new_user_id, '');
 				$address_data = array('id' => $new_user_id);
-				$address_insert_success = Address::store($address_data);
+				$address_insert_status = Address::store($address_data);
 
 				// Successful insertion of data in address table
-				if($address_insert_success != 0)
+				if($address_insert_status != 0)
 				{
 					Auth::loginUsingId($new_user_id);
 					return redirect('dashboard');

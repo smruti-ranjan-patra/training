@@ -7,4 +7,9 @@ Route::group(['prefix' => 'api/v1/', 'middleware' => 'api_access'], function ()
 		'middleware' => 'api',
 		'uses' => 'ApiController@getUsers'
 	]);
+	Route::post('create_users', 
+	[
+		'middleware' => 'api',
+		'uses' => 'ApiController@getUsers'
+	]);
 });

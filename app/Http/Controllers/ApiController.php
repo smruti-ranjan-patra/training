@@ -35,6 +35,8 @@ class ApiController extends Controller
 		{
 			$user_data = User::with('address')
 								->where('first_name', 'LIKE', '%'.$name.'%')
+								->orWhere('middle_name', 'LIKE', '%'.$name.'%')
+								->orWhere('last_name', 'LIKE', '%'.$name.'%')
 								->take($limit)
 								->skip($offset)
 								->get();
@@ -116,11 +118,11 @@ class ApiController extends Controller
 	}
 
 	/**
-	 * To display address
+	 * To convert zero to empty string
 	 *
-	 * @param  string $data
+	 * @param  mixed $num
 	 *
-	 * @return string $display_string
+	 * @return mixed
 	*/
 	public static function displayNumbers($num)
 	{
