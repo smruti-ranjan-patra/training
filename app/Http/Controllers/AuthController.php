@@ -105,7 +105,7 @@ class AuthController extends Controller
 	public function doRegister(Request $request)
 	{
 		// Update Data
-		if($request->id)
+		if($request->id !== 0)
 		{
 			if($this->validateRequest($request, $request->id))
 			{
@@ -115,7 +115,7 @@ class AuthController extends Controller
 				if ( !empty( $comm ) && empty( array_intersect( $comm, $this->comm_array) ) )
 				{
 					return redirect('register')->with( 'redirect_error', 'invalid com selection' )
-																			->withInput();
+												->withInput();
 				}
 
 				if(isset($comm))
@@ -179,7 +179,7 @@ class AuthController extends Controller
 
 				User::imageUpload($user_insert_id, $pic_name);
 
-				if($user_insert_id)
+				if($user_insert_id !== 0)
 				{
 					$data['id'] = $user_insert_id;
 					$address_insert_status = Address::store($data);

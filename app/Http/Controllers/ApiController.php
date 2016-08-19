@@ -8,11 +8,70 @@ use App\Http\Requests;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\CommunicationMedium;
+use Validator;
 use Auth;
 use Log;
 
 class ApiController extends Controller
 {
+	/**
+	 * To validate the fields
+	 *
+	 * @param  Request  $request
+	 * @param  integer  $user_id
+	 * @return mixed
+	*/
+	public static function validateRequest($request, $user_id)
+	{
+		$state_list = config( 'constants.state_list' );
+		$state_string = implode(',', array_keys($state_list));
+
+		$messages = [
+			'first_name.required' => 'First Name is required',
+			'first_name.min' => 'First Name must be between 2 to 15 characters',
+			'first_name.max' => 'First Name must be between 2 to 15 characters',
+			'first_name.alpha' => 'First Name must can contain only alphabets'
+		];
+
+		$val_array = [
+			'first_name' => 'required|alpha|min:2|max:15',
+			'middle_name' => 'alpha|max:15',
+			'last_name' => 'alpha|min:2|max:15',
+			'new_email' => 'required|email|unique:users,email,' . $user_id,
+			'new_password' => 'required|min:8|max:12',
+			'twitter' => 'max:15',
+			'prefix' => 'in:mr,ms,mrs',
+			'gender' => 'in:male,female,others',
+			'dob' => 'date',
+			'marital' => 'in:single,married',
+			'employment' => 'in:employed,unemployed',
+			'employer' => 'max:20',
+			'r_street' => 'alpha_dash|max:20',
+			'o_street' => 'alpha_dash|max:20',
+			'r_city' => 'alpha|max:20',
+			'o_city' => 'alpha|max:20',
+			'r_state' => 'in:' . $state_string,
+			'o_state' => 'in:' . $state_string,
+			'r_zip' => 'numeric|digits_between:5,6',
+			'o_zip' => 'numeric|digits_between:5,6',
+			'r_phone' => 'numeric|digits_between:7,11',
+			'o_phone' => 'numeric|digits_between:7,11',
+			'r_fax' => 'numeric|digits_between:7,11',
+			'o_fax' => 'numeric|digits_between:7,11'
+		];
+
+		$validator = Validator::make($request->all(), $val_array, $messages);
+
+		if($validator->fails())
+		{
+			return $validator->messages()->all();
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 	/**
 	 * To fetch all employee details
 	 *
@@ -48,7 +107,7 @@ class ApiController extends Controller
 			if(User::find($request->id) == null)
 			{
 				return response()->json(['error' => 404, 'message' => 'Invalid ID'], 404);
-			}		
+			}
 		}
 
 		$i = 0;
@@ -90,7 +149,7 @@ class ApiController extends Controller
 				$comm_val = '';
 			}
 			else
-			{	
+			{
 				$temp_arr = array();
 				$comm_arr = explode(", ", $value->comm_id);
 
@@ -114,6 +173,126 @@ class ApiController extends Controller
 		else
 		{
 			return response()->json(['total_users' => User::get()->count(), 'displaying_users' => count($json), 'users' => $json]);
+		}
+	}
+
+	/**
+	 * To create new users
+	 *
+	 * @param  Request  $request
+	 *
+	 * @return response
+	*/
+	public function createUsers(Request $request)
+	{
+		$valdation_status = ApiController::validateRequest($request, 0);
+
+		if($valdation_status === true)
+		{
+			$data = $request->all();
+			$data['comm_val'] = isset($request->comm_id) ? $request->comm_id : '';
+			$data['email'] = $request->new_email;
+			$data['password'] = $request->new_password;
+			$user_insert_id = User::store($data);
+
+			// Successful insertion of data in user table
+			if($user_insert_id !== 0)
+			{
+				$data['id'] = $user_insert_id;
+				$address_insert_status = Address::store($data);
+
+				// Successful insertion of data in address table
+				if($address_insert_status == 1)
+				{
+					User::find($user_insert_id)->update(['is_active' => 1]);
+					return response()->json(['message' => 'New user successfully created'], 200);
+				}
+				else //Unsuccessful insertion of data in address table
+				{
+					User::deleteRecord($user_insert_id);
+					return response()->json(['error' => 500, 'message' => 'Internal Server Error'], 500);
+				}
+			}
+			else //Unsuccessful insertion of data in user table
+			{
+				return response()->json(['error' => 500, 'message' => 'Internal Server Error'], 500);
+			}
+		}
+		else
+		{
+			return response()->json(['error' => 401, 'message' => $valdation_status], 401);
+		}
+	}
+
+	/**
+	 * To update user data
+	 *
+	 * @param  Request  $request
+	 *
+	 * @return response
+	*/
+	public function updateUsers(Request $request)
+	{
+		if(User::find($request->id) == null)
+		{
+			return response()->json(['error' => 404, 'message' => 'Invalid ID'], 404);
+		}
+		else
+		{
+			$valdation_status = ApiController::validateRequest($request, $request->id);
+
+			if($valdation_status === true)
+			{
+				$data = $request->all();
+				$data['id'] = $request->id;
+				$data['comm_val'] = isset($request->comm_id) ? $request->comm_id : '';
+				$data['email'] = $request->new_email;
+				$data['password'] = $request->new_password;
+
+				try
+				{
+					User::updateUser($data);
+					Address::updateAddress($data);
+				}
+				catch(\Exception $e)
+				{
+					Log::error('Update user table : '.$e);
+					return response()->json(['error' => 500, 'message' => 'Internal Server Error'], 500);
+				}
+				return response()->json(['message' => 'User data successfully updated'], 200);
+			}
+			else
+			{
+				return response()->json(['error' => 401, 'message' => $valdation_status], 401);
+			}
+		}
+	}
+
+	/**
+	 * To delete user
+	 *
+	 * @param  Request  $request
+	 *
+	 * @return response
+	*/
+	public function deleteUsers(Request $request)
+	{
+		if(User::find($request->id) == null)
+		{
+			return response()->json(['error' => 404, 'message' => 'Invalid ID'], 404);
+		}
+		else
+		{
+			try
+			{
+				User::deleteRecord($request->id);
+				return response()->json(['message' => 'User successfully deleted'], 200);
+			}
+			catch(\Exception $e)
+			{
+				Log::error('Delete user table : '.$e);
+				return response()->json(['error' => 500, 'message' => 'Internal Server Error'], 500);
+			}
 		}
 	}
 

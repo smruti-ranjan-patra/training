@@ -93,24 +93,24 @@ class Address extends Model
 					->where('address_type', '=', 'residence')
 						->update(
 							[
-								'street' => $post_data['r_street'],
-								'city' => $post_data['r_city'],
-								'state' => $post_data['r_state'],
-								'zip' => $post_data['r_zip'],
-								'phone' => $post_data['r_phone'],
-								'fax' => $post_data['r_fax']
+								'street' => isset($post_data['r_street']) ? $post_data['r_street'] : '',
+								'city' => isset($post_data['r_city']) ? $post_data['r_city'] : '',
+								'state' => isset($post_data['r_state']) ? $post_data['r_state'] : 0,
+								'zip' => isset($post_data['r_zip']) ? $post_data['r_zip'] : 0,
+								'phone' => isset($post_data['r_phone']) ? $post_data['r_phone'] : 0,
+								'fax' => isset($post_data['r_fax']) ? $post_data['r_fax'] : 0
 							]);
 
 		Address::where('user_id', '=', $post_data['id'])
 					->where('address_type', '=', 'office')
 						->update(
 							[
-								'street' => $post_data['o_street'],
-								'city' => $post_data['o_city'],
-								'state' => $post_data['o_state'],
-								'zip' => $post_data['o_zip'],
-								'phone' => $post_data['o_phone'],
-								'fax' => $post_data['o_fax']
+								'street' => isset($post_data['o_street']) ? $post_data['o_street'] : '',
+								'city' => isset($post_data['o_city']) ? $post_data['o_city'] : '',
+								'state' => isset($post_data['o_state']) ? $post_data['o_state'] : 0,
+								'zip' => isset($post_data['o_zip']) ? $post_data['o_zip'] : 0,
+								'phone' => isset($post_data['o_phone']) ? $post_data['o_phone'] : 0,
+								'fax' => isset($post_data['o_fax']) ? $post_data['o_fax'] : 0
 							]);
 	}
 

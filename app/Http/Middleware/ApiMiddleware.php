@@ -44,9 +44,16 @@ class ApiMiddleware
 			return response()->json(['error' => 401, 'message' => $validator->messages()->all()], 401);
 		}
 
-		if(Auth::once(['email' => $email, 'password' => $password, 'is_active' => 1]))
+		if(Auth::once(['email' => $email, 'password' => $password]))
 		{
-			return $next($request);
+			if(Auth::once(['email' => $email, 'password' => $password, 'is_active' => 1]))
+			{
+				return $next($request);
+			}
+			else
+			{
+				return response()->json(['error' => 401, 'message' => 'Inactive account'], 401);
+			}
 		}
 		else
 		{

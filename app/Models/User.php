@@ -105,20 +105,20 @@ class User extends Model
 					->update(
 						[
 							'first_name' => $post_data['first_name'],
-							'middle_name' => $post_data['middle_name'],
-							'last_name' => $post_data['last_name'],
-							'email' => $post_data['email'],
-							'password' => Hash::make($post_data['password']),
-							'twitter_name' => $post_data['twitter_name'],
-							'prefix' => $post_data['prefix'],
-							'gender' => $post_data['gender'],
-							'dob' => $post_data['dob'],
-							'marital_status' => $post_data['marital_status'],
-							'employment' => $post_data['employment'],
-							'employer' => $post_data['employer'],
-							'extra_note' => $post_data['notes'],
-							'comm_id' => $post_data['comm_val'],
-							'photo' => $post_data['pic_name']
+							'middle_name' => isset($post_data['middle_name']) ? $post_data['middle_name'] : '',
+							'last_name' => isset($post_data['last_name']) ? $post_data['last_name'] : '',
+							'email' => isset($post_data['email']) ? $post_data['email'] : '',
+							'password' =>isset($post_data['password']) ? Hash::make($post_data['password']) : '',
+							'twitter_name' => isset($post_data['twitter_name']) ? $post_data['twitter_name'] : '',
+							'prefix' => isset($post_data['prefix']) ? $post_data['prefix'] : '',
+							'gender' => isset($post_data['gender']) ? $post_data['gender'] : '',
+							'dob' => isset($post_data['dob']) ? $post_data['dob'] : '',
+							'marital_status' => isset($post_data['marital_status']) ? $post_data['marital_status'] : '',
+							'employment' => isset($post_data['employment']) ? $post_data['employment'] : '',
+							'employer' => isset($post_data['employer']) ? $post_data['employer'] : '',
+							'extra_note' => isset($post_data['notes']) ? $post_data['notes'] : '',
+							'comm_id' => isset($post_data['comm_val']) ? $post_data['comm_val'] : '',
+							'photo' => isset($post_data['pic_name']) ? $post_data['pic_name'] : ''
 						]);
 	}
 
