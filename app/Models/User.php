@@ -33,7 +33,7 @@ class User extends Model
 	];
 
 	/**
-	 * Get the address that owns the user.
+	 * Get the address that owns the user
 	 *
 	 * @param  void
 	 * @return mixed
@@ -44,7 +44,7 @@ class User extends Model
 	}
 
 	/**
-	 * To insert data into users table.
+	 * To insert data into users table
 	 *
 	 * @param  array $post_data
 	 * @return integer

@@ -41,7 +41,7 @@ class ApiMiddleware
 
 		if($validator->fails())
 		{
-			return response()->json(['error' => 401, 'message' => $validator->messages()->all()], 401);
+			return response()->json(['error' => 1401, 'message' => $validator->messages()->all()], 401);
 		}
 
 		if(Auth::once(['email' => $email, 'password' => $password]))
@@ -52,12 +52,12 @@ class ApiMiddleware
 			}
 			else
 			{
-				return response()->json(['error' => 401, 'message' => 'Inactive account'], 401);
+				return response()->json(['error' => 1401, 'message' => 'Inactive account'], 401);
 			}
 		}
 		else
 		{
-			return response()->json(['error' => 401, 'message' => 'Invalid Login Credentials'], 401);
+			return response()->json(['error' => 1401, 'message' => 'Invalid Login Credentials'], 401);
 		}
 	}
 }
