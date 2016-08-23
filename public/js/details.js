@@ -8,16 +8,14 @@ $(function()
 		ajax: appUrl + 'details',
 		lengthMenu: [ 2, 5, 10, 25, 50, 75, 100 ],
 		columns: [
-				{ data: 'id', name: 'id' },
-				{ data: 'prefix', name: 'prefix' },
-				{ data: 'first_name', name: 'first_name' },					
-				{ data: 'email', name: 'email' },
-				{ data: 'gender', name: 'gender' },
-				{ data: 'dob', name: 'dob' },
-				{ data: 'action', name: 'first_name' }
-
-		],
-		columnDefs: [ { orderable: false, targets: [0,6] }],
+					{ data: 'prefix', name: 'prefix' },
+					{ data: 'first_name', name: 'first_name' },
+					{ data: 'email', name: 'email' },
+					{ data: 'gender', name: 'gender' },
+					{ data: 'dob', name: 'dob' },
+					{ data: 'action', name: 'first_name' }
+				],
+		columnDefs: [ { orderable: false, targets: [5] }],
 		order: [],
 	});
 
@@ -54,7 +52,6 @@ $(function()
 	{
 		$("select").val("1");
 		user_id = $(this).attr('data_userid');
-		console.log(user_id);
 		get_tweets(user_id);
 	});
 
@@ -69,10 +66,12 @@ $(function()
 	 */
 	function get_tweets(id, num_tweets = 1)
 	{
+		var tweets_display = '';
 		$('#tweet_selector').hide();
 		tweets_display = '<div style="text-align: center"><img src="././images/loading.gif" style="width:80px;height:80px;"></div>';
 		$('.modal-body').html(tweets_display);
 		$('.modal-title').html('Loading...');
+		$("#twitter_modal").modal({backdrop: 'static', keyboard: false, show: true});
 
 		$.ajax(
 		{
@@ -86,13 +85,7 @@ $(function()
 			dataType : 'JSON',
 			success: function(tweet_data)
 			{
-				if(tweet_data.err_val == 1)
-				{
-					$('.modal-title').html('Oops !!!');
-					$('#tweet_selector').hide();
-					$('.modal-body').html(tweet_data.err_msg);
-				}
-				else if (tweet_data.err_val == 2)
+				if(tweet_data.err_val === 1 || tweet_data.err_val === 2)
 				{
 					$('.modal-title').html('Oops !!!');
 					$('#tweet_selector').hide();
@@ -106,7 +99,7 @@ $(function()
 					var tweet_body = '';
 					tweet_body += '<div style="text-align: center"><img src="' + tweet_data.image + '" style="border-radius:20%;width:100px;height:100px;"></div>';
 
-					for(i in tweet_data.tweet_results)
+					for(var i=0; i<tweet_data.tweet_results.length; i++)
 					{
 						tweet_body += '<hr><p>' + tweet_data.tweet_results[i] + '</p>';
 					}
@@ -114,10 +107,7 @@ $(function()
 					tweets_display = tweet_body;
 					$('.modal-body').html(tweets_display);
 				}
-				$("#twitter_modal").modal({backdrop: 'static', keyboard: false, show: true});
 			}
-
 		});
 	}
-
 });

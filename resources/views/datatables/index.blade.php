@@ -6,7 +6,6 @@
 	<table class="table table-bordered" id="users-table">
 			<thead>
 					<tr>
-							<th>Serial No.</th>
 							<th>Prefix</th>
 							<th>Name</th>
 							<th>Email</th>

@@ -104,29 +104,29 @@ class AuthController extends Controller
 	*/
 	public function doRegister(Request $request)
 	{
-		// Update Data
+		$data = $request->all();
+		$comm = $request->get('comm');
+
+		if (!empty($comm) && empty(array_intersect($comm, $this->comm_array)))
+		{
+			return redirect('register')->with( 'redirect_error', 'invalid communication medium selection' )
+										->withInput();
+		}
+
+		if(isset($comm))
+		{
+			$data['comm_val'] = implode(', ', $comm);
+		}
+		else
+		{
+			$data['comm_val'] = '';
+		}
+
 		if($request->id !== 0)
 		{
+			// Update Data
 			if($this->validateRequest($request, $request->id))
 			{
-				$data = $request->all();
-				$comm = $request->get('comm');
-
-				if ( !empty( $comm ) && empty( array_intersect( $comm, $this->comm_array) ) )
-				{
-					return redirect('register')->with( 'redirect_error', 'invalid com selection' )
-												->withInput();
-				}
-
-				if(isset($comm))
-				{
-					$data['comm_val'] = implode(', ', $comm);
-				}
-				else
-				{
-					$data['comm_val'] = '';
-				}
-
 				if($request->hasFile('pic'))
 				{
 					$pic_name = AuthController::imageUpload($request, $request->id);
@@ -137,35 +137,16 @@ class AuthController extends Controller
 				}
 
 				$data['pic_name'] = $pic_name;
-
 				User::updateUser($data);
 				Address::updateAddress($data);
 				return redirect('details');
 			}
 		}
-		else // Create user data
+		else
 		{
+			// Create user data
 			if($this->validateRequest($request, 0))
 			{
-				$comm = $request->get('comm');
-
-				if ( !empty( $comm ) && empty( array_intersect( $comm, $this->comm_array) ) )
-				{
-					return redirect('register')->with( 'redirect_error', 'invalid com selection' )
-												->withInput();
-				}
-
-				$data = $request->all();
-
-				if(isset($comm))
-				{
-					$data['comm_val'] = implode(', ', $comm);
-				}
-				else
-				{
-					$data['comm_val'] = '';
-				}
-
 				$user_insert_id = User::store($data);
 
 				if($request->hasFile('pic'))
@@ -184,12 +165,14 @@ class AuthController extends Controller
 					$data['id'] = $user_insert_id;
 					$address_insert_status = Address::store($data);
 
-					// Successful insertion of data in address table
+					
 					if($address_insert_status == 1)
 					{
-						// Adding User by Admin
+						// Successful insertion of data in address table
+
 						if(auth()->user() != null)
 						{
+							// Adding User by Admin
 							$mail_text = 'Your new account has been created by ' . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' and your password is : ' . $request->password;
 
 							Mail::raw($mail_text, function ($message) use ($request)
@@ -202,8 +185,9 @@ class AuthController extends Controller
 
 							return redirect('dashboard');
 						}						
-						else // User registering its own details
+						else
 						{
+							// User registering its own details
 							\Session::flash('flash_message', 'A verification link has been sent to the registered mail id');
 
 							$key = User::find($user_insert_id)->key;
@@ -218,8 +202,9 @@ class AuthController extends Controller
 							return redirect('login');
 						}
 					}
-					else //Unsuccessful insertion of data in address table
+					else
 					{
+						//Unsuccessful insertion of data in address table
 						User::deleteRecord($user_insert_id);
 						return view('registration', ['db_insert_error', 'Please try again after sometime']);
 					}
@@ -360,7 +345,6 @@ class AuthController extends Controller
 
 			Mail::raw($mail_text, function ($message) use ($request)
 			{
-				// global $request;
 				$message->from('1234asdf56789@gmail.com', 'Laravel');
 				$message->to($request->email, 'Hello User')->subject('Reset Password');
 			});
@@ -447,69 +431,6 @@ class AuthController extends Controller
 	}
 
 	/**
-	 * Obtain the user information from LinkedIn.
-	 *
-	 * @return Response
-	 */
-	public function handleProviderCallbackLinkedin(Request $request = null)
-	{
-		// User cancels login through linkedIn
-		if(isset($request->error) && $request->error == 'user_cancelled_login')
-		{
-			return redirect('login');
-		}
-
-		$user = Socialite::driver('linkedin')->user();
-		$email = $user['emailAddress'];
-		$first_name = $user['firstName'];
-		$last_name = $user['lastName'];
-		$password = env('DEFAULT_PASSWORD', '12341234');
-		$id = User::getId($email);
-
-		// Login the existing user
-		if($id != 0)
-		{
-			Auth::loginUsingId($id);
-			return redirect('dashboard');
-		}
-		else // Create User data for new user
-		{
-			$user_data = array(
-				'first_name' => $first_name,
-				'last_name' => $last_name,
-				'email' => $email,
-				'password' => $password
-				);
-
-			$new_user_id = User::store($user_data);
-
-			// Successful insertion of data in users table
-			if($new_user_id != 0)
-			{
-				User::imageUpload($new_user_id, '');
-				$address_data = array('id' => $new_user_id);
-				$address_insert_status = Address::store($address_data);
-
-				// Successful insertion of data in address table
-				if($address_insert_status != 0)
-				{
-					Auth::loginUsingId($new_user_id);
-					return redirect('dashboard');
-				}
-				else // Unsuccessful insertion of data in address table
-				{
-					User::deleteRecord($new_user_id);
-					return view('login', ['db_insert_error', 'Please try again after sometime']);
-				}
-			}
-			else //Unsuccessful insertion of data in users table
-			{
-				return view('login', ['db_insert_error', 'Please try again after sometime']);
-			}
-		}
-	}
-
-	/**
 	 * Redirect the user to the Twitter authentication page.
 	 *
 	 * @return Response
@@ -520,15 +441,15 @@ class AuthController extends Controller
 	}
 
 	/**
-	 * Obtain the user information from Twitter.
+	 * Obtain the user information from all api.
 	 *
 	 * @return Response
 	 */
 	public function handleProviderCallback(Request $request = null)
-	{
-		// User cancels login through linkedIn
+	{		
 		if(isset($request->error) && $request->error == 'user_cancelled_login')
 		{
+			// User cancels login through linkedIn
 			return redirect('login');
 		}
 
@@ -559,14 +480,15 @@ class AuthController extends Controller
 		$password = env('DEFAULT_PASSWORD', '12341234');
 		$id = User::getId($email);
 
-		// Login the existing user
 		if($id != 0)
 		{
+			// Login the existing user
 			Auth::loginUsingId($id);
 			return redirect('dashboard');
 		}
-		else // Create User data for new user
+		else
 		{
+			// Create User data for new user
 			$user_data = array(
 				'first_name' => $first_name,
 				'middle_name' => $middle_name,
@@ -577,27 +499,29 @@ class AuthController extends Controller
 
 			$new_user_id = User::store($user_data);
 
-			// Successful insertion of data in users table
 			if($new_user_id != 0)
 			{
+				// Successful insertion of data in users table
 				User::imageUpload($new_user_id, '');
 				$address_data = array('id' => $new_user_id);
 				$address_insert_status = Address::store($address_data);
 
-				// Successful insertion of data in address table
 				if($address_insert_status != 0)
 				{
+					// Successful insertion of data in address table
 					Auth::loginUsingId($new_user_id);
 					return redirect('dashboard');
 				}
-				else // Unsuccessful insertion of data in address table
+				else
 				{
+					// Unsuccessful insertion of data in address table
 					User::deleteRecord($new_user_id);
 					return view('login', ['db_insert_error', 'Please try again after sometime']);
 				}
 			}
-			else //Unsuccessful insertion of data in users table
+			else
 			{
+				//Unsuccessful insertion of data in users table
 				return view('login', ['db_insert_error', 'Please try again after sometime']);
 			}
 		}

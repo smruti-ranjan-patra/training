@@ -30,14 +30,10 @@ class DatatablesController extends Controller
 			$query = User::select('id', 'prefix', 'first_name', 'middle_name', 'last_name',  'role_id', 'email', 'gender', 'dob');
 
 			return Datatables::of($query)
+							->remove_column('id')
 							->remove_column('middle_name')
 							->remove_column('last_name')
 							->remove_column('role_id')
-							->edit_column('id', function($query)
-								{
-									static $serial = 0;
-									return ++$serial;
-								})
 							->edit_column('prefix', '{{ucfirst($prefix)}}')
 							->edit_column('first_name', function ($query)
 							{

@@ -64,7 +64,6 @@ class EmployeeController extends Controller
 	public function view(Request $request)
 	{
 		$emp_data = User::retrieveData($request->id);
-		$comm_medium_tbl = CommunicationMedium::retrieveData();
 
 		$name = ucfirst($emp_data[0]->prefix) . ' ' . ucfirst($emp_data[0]->first_name) . ' ' . ucfirst($emp_data[0]->middle_name) . ' ' . ucfirst($emp_data[0]->last_name);
 
@@ -178,7 +177,6 @@ class EmployeeController extends Controller
 						$result[$i] = $response[$i]->text;
 					}
 				}
-
 			}
 
 			return response()->json(['tweet_results' => $result, 'image' => $image, 'user_name' => $user_name]);

@@ -14,7 +14,12 @@ use Log;
 
 class ApiController extends Controller
 {
-
+	/**
+	 * To error in URL
+	 *
+	 * @param  Request  $request
+	 * @return response
+	*/
 	public function postIndex(Request $request)
 	{
 		return response()->json(['error' => 1404, 'message' => 'URL not found']);
@@ -104,7 +109,7 @@ class ApiController extends Controller
 						break;
 
 				case 'delete':
-						$json_response = ApiController::delete($request, $two);
+						$json_response = ApiController::delete($two);
 						break;
 
 				default:
@@ -125,35 +130,19 @@ class ApiController extends Controller
 	*/
 	private static function details(Request $request, $id = 0)
 	{
-		// dd($_SERVER['HTTP_USER_AGENT']);
-		// dd($request->isXmlHttpRequest());
-		$email = isset($request->email) ? $request->email : '';
-		$password = isset($request->password) ? $request->password : '';
 		$limit = isset($request->limit) ? $request->limit : User::get()->count();
 		$offset = isset($request->offset) ? $request->offset : 0;
 		$name = isset($request->name) ? $request->name : '';
 		$street = isset($request->street) ? $request->street : '';
 		$city = isset($request->city) ? $request->city : '';
 		$phone = isset($request->phone) ? $request->phone : '';
-
-		$comm_medium_tbl = CommunicationMedium::retrieveData();
 		$json = array();
 
-		if($id == 0)
+		if(isset($request->street) || isset($request->city) || isset($request->phone))
 		{
-			$user_data = User::with('address')
-								->where('first_name', 'LIKE', '%'.$name.'%')
-								->orWhere('middle_name', 'LIKE', '%'.$name.'%')
-								->orWhere('last_name', 'LIKE', '%'.$name.'%')
-								->take($limit)
-								->skip($offset)
-								->get();
-		}
-		elseif(isset($request->street) || isset($request->city) || isset($request->phone))
-		{
-			$address_data = Address::where('city', 'LIKE', '%'.$request->street.'%')
-								->orWhere('state', 'LIKE', '%'.$request->state.'%')
-								->orWhere('phone', 'LIKE', '%'.$request->phone.'%')
+			$address_data = Address::where('street', 'LIKE', '%'.$street.'%')
+								->where('city', 'LIKE', '%'.$city.'%')
+								->where('phone', 'LIKE', '%'.$phone.'%')
 								->first();
 
 			if($address_data == null)
@@ -164,6 +153,16 @@ class ApiController extends Controller
 			{
 				$user_data = User::retrieveData($address_data->user->id);
 			}
+		}
+		elseif($id == 0)
+		{
+			$user_data = User::with('address')
+								->where('first_name', 'LIKE', '%'.$name.'%')
+								->orWhere('middle_name', 'LIKE', '%'.$name.'%')
+								->orWhere('last_name', 'LIKE', '%'.$name.'%')
+								->take($limit)
+								->skip($offset)
+								->get();
 		}
 		else
 		{
@@ -231,14 +230,7 @@ class ApiController extends Controller
 			$i++;
 		}
 
-		if($limit == User::get()->count())
-		{
-			return response()->json(['total_users' => User::get()->count(), 'users_per_page' => count($json),'users' => $json]);
-		}
-		else
-		{
-			return response()->json(['total_users' => User::get()->count(), 'users_per_page' => count($json), 'users' => $json]);
-		}
+		return response()->json(['total_users' => User::get()->count(), 'users_per_page' => count($json),'users' => $json]);
 	}
 
 	/**
@@ -250,6 +242,9 @@ class ApiController extends Controller
 	*/
 	private static function create(Request $request)
 	{
+		$ajax_error = '';
+		$error_message = '';
+		$http_error = '';
 		$valdation_status = ApiController::validateRequest($request, 0);
 
 		if($valdation_status === true)
@@ -260,33 +255,45 @@ class ApiController extends Controller
 			$data['password'] = $request->new_password;
 			$user_insert_id = User::store($data);
 
-			// Successful insertion of data in user table
 			if($user_insert_id !== 0)
 			{
+				// Successful insertion of data in user table
 				$data['id'] = $user_insert_id;
 				$address_insert_status = Address::store($data);
 
-				// Successful insertion of data in address table
 				if($address_insert_status == 1)
 				{
+					// Successful insertion of data in address table
 					User::find($user_insert_id)->update(['is_active' => 1]);
-					return response()->json(['error' => '', 'message' => 'New user successfully created'], 200);
+					$ajax_error = '';
+					$error_message = 'New user successfully created';
+					$http_error = 200;
 				}
-				else //Unsuccessful insertion of data in address table
+				else
 				{
+					//Unsuccessful insertion of data in address table
 					User::deleteRecord($user_insert_id);
-					return response()->json(['error' => 1500, 'message' => 'Internal Server Error'], 500);
+					$ajax_error = 1500;
+					$error_message = 'An error occured, please try after sometime';
+					$http_error = 500;
 				}
 			}
-			else //Unsuccessful insertion of data in user table
+			else
 			{
-				return response()->json(['error' => 1500, 'message' => 'Internal Server Error'], 500);
+				//Unsuccessful insertion of data in user table
+				$ajax_error = 1500;
+				$error_message = 'An error occured, please try after sometime';
+				$http_error = 500;
 			}
 		}
 		else
 		{
-			return response()->json(['error' => 1401, 'message' => $valdation_status], 401);
+			$ajax_error = 1401;
+			$error_message = $valdation_status;
+			$http_error = 401;
 		}
+
+		return response()->json(['error' => $ajax_error, 'message' => $error_message], $http_error);
 	}
 
 	/**
@@ -298,9 +305,15 @@ class ApiController extends Controller
 	*/
 	private static function update(Request $request, $id = 0)
 	{
+		$ajax_error = '';
+		$error_message = '';
+		$http_error = '';
+
 		if(User::find($id) == null)
 		{
-			return response()->json(['error' => 1404, 'message' => 'Invalid ID'], 404);
+			$ajax_error = 1404;
+			$error_message = 'Invalid ID';
+			$http_error = 404;
 		}
 		else
 		{
@@ -318,19 +331,27 @@ class ApiController extends Controller
 				{
 					User::updateUser($data);
 					Address::updateAddress($data);
+					$ajax_error = '';
+					$error_message = 'User data successfully updated';
+					$http_error = 200;
 				}
 				catch(\Exception $e)
 				{
 					Log::error('Update user table : '.$e);
-					return response()->json(['error' => 1500, 'message' => 'Internal Server Error'], 500);
+					$ajax_error = 1500;
+					$error_message = 'An error occured, please try after sometime';
+					$http_error = 500;
 				}
-				return response()->json(['error' => '', 'message' => 'User data successfully updated'], 200);
 			}
 			else
 			{
-				return response()->json(['error' => 1401, 'message' => $valdation_status], 401);
+				$ajax_error = 1401;
+				$error_message = $valdation_status;
+				$http_error = 401;
 			}
 		}
+
+		return response()->json(['error' => $ajax_error, 'message' => $error_message], $http_error);
 	}
 
 	/**
@@ -340,25 +361,37 @@ class ApiController extends Controller
 	 *
 	 * @return response
 	*/
-	private static function delete(Request $request, $id = 0)
+	private static function delete($id = 0)
 	{
+		$ajax_error = '';
+		$error_message = '';
+		$http_error = '';
+
 		if(User::find($id) == null)
 		{
-			return response()->json(['error' => 1404, 'message' => 'Invalid ID'], 404);
+			$ajax_error = 1404;
+			$error_message = 'Invalid ID';
+			$http_error = 404;
 		}
 		else
 		{
 			try
 			{
 				User::deleteRecord($id);
-				return response()->json(['error' => '', 'message' => 'User successfully deleted'], 200);
+				$ajax_error = '';
+				$error_message = 'User successfully deleted';
+				$http_error = 200;
 			}
 			catch(\Exception $e)
 			{
 				Log::error('Delete user table : '.$e);
-				return response()->json(['error' => 1500, 'message' => 'Internal Server Error'], 500);
+				$ajax_error = 1500;
+				$error_message = 'An error occured, please try after sometime';
+				$http_error = 500;
 			}
 		}
+
+		return response()->json(['error' => $ajax_error, 'message' => $error_message], $http_error);
 	}
 
 	/**

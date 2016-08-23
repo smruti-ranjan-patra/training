@@ -11,7 +11,7 @@ function check_action(obj)
 	var id;
 	var is_checked;
 
-	if($(obj).prop("checked") == true)
+	if($(obj).prop("checked") === true)
 	{
 		is_checked = 1;
 	}
@@ -30,9 +30,6 @@ function check_action(obj)
 			id: id,
 			is_checked: is_checked
 		},
-		type: 'GET',
-		success: function(access_details)
-		{
-		}
+		type: 'GET'
 	});
 }

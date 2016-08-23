@@ -41,7 +41,6 @@ class RoleResourcePermission extends Model
 	public static function insertData ($id)
 	{
 		$id_array = explode("-", $id);
-		// dd($id_array);
 		RoleResourcePermission::create(
 				[
 					'fk_role' => $id_array[0],
