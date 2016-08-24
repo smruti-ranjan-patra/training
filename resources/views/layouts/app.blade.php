@@ -48,7 +48,7 @@
 					@endif
 
 				@else
-					<li {!! ($page == 'local.laravel.com') ? $is_active : '' !!} >{!! Html::link(route('home'), 'Home') !!}</li>
+					<li {!! ($page == 'local.laravel.com' || $page == 'public') ? $is_active : '' !!} >{!! Html::link(route('home'), 'Home') !!}</li>
 					<li {!! ($page == 'register') ? $is_active : '' !!} >{!! Html::link('/register', 'Register') !!}</li>
 					<li {!! ($page == 'login') ? $is_active : '' !!} >{!! Html::link('/login', 'Login') !!}</li>
 				@endif

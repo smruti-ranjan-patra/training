@@ -47,6 +47,7 @@
 						<!-- Login Button -->
 						<div class="form-group text-center">
 								{!! Form::submit('Login', ['class' => 'btn btn-primary']) !!}
+								{!! Form::reset('Reset', ['class' => 'btn btn-danger']) !!}
 						</div>
 
 					{!! Form::close() !!}
