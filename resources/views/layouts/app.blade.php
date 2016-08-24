@@ -30,21 +30,27 @@
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<ul class="nav navbar-nav">
-				<!-- @yield('paging') -->
 				
+				<?php
+					$is_active = 'class="active"';
+					$url =  url()->current();
+					$pos = strrpos($url, "/");
+					$page = substr($url, $pos+1);
+				?>
+
 				@if(Auth::check())
-					<li>{!! Html::link('/dashboard', 'Dashboard') !!}</li>
-					<li>{!! Html::link('/details', 'Details') !!}</li>
+					<li {!! ($page == 'dashboard') ? $is_active : '' !!} >{!! Html::link('/dashboard', 'Dashboard') !!}</li>
+					<li {!! ($page == 'details') ? $is_active : '' !!} >{!! Html::link('/details', 'Details') !!}</li>
 
 					@if(Auth::user()->role_id == 1)
-						<li>{!! Html::link('/add_user', 'Add User') !!}</li>
-						<li>{!! Html::link('/permission', 'Permission Manager') !!}</li>
+						<li {!! ($page == 'add_user') ? $is_active : '' !!} >{!! Html::link('/add_user', 'Add User') !!}</li>
+						<li {!! ($page == 'permission') ? $is_active : '' !!} >{!! Html::link('/permission', 'Permission Manager') !!}</li>
 					@endif
 
 				@else
-					<li>{!! Html::link(route('home'), 'Home') !!}</li>
-					<li>{!! Html::link('/register', 'Register') !!}</li>
-					<li>{!! Html::link('/login', 'Login') !!}</li>
+					<li {!! ($page == 'local.laravel.com') ? $is_active : '' !!} >{!! Html::link(route('home'), 'Home') !!}</li>
+					<li {!! ($page == 'register') ? $is_active : '' !!} >{!! Html::link('/register', 'Register') !!}</li>
+					<li {!! ($page == 'login') ? $is_active : '' !!} >{!! Html::link('/login', 'Login') !!}</li>
 				@endif
 
 			</ul>
@@ -52,6 +58,9 @@
 			<ul class="nav navbar-nav navbar-right">
 
 				@if(Auth::check())
+
+					<li>{!! Html::image(asset('images/profile_pic' . '/' . Auth::user()->photo) , 'No image found', array( 'width' => 40, 'height' => 40, 'id' => 'nav_profile_icon')) !!}</li>
+
 					<li>{!! Html::link('/logout', 'Log out') !!}</li>
 				@endif
 
@@ -68,7 +77,15 @@
 
 	<!-- JavaScripts -->
 	@yield('js-css')
-
+	<!-- jQuery -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<style type="text/css">
+		#nav_profile_icon
+		{
+			margin-top: 5px;
+			border: 1px solid white;
+		}
+	</style>
 	<script>
 		var appUrl = "{{ URL('/') }}" + '/';
 		var pic_link = "{{ asset('images/profile_pic') . '/'}}";

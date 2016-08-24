@@ -35,6 +35,7 @@
 	$o_zip = '';
 	$o_phone = '';
 	$o_fax = '';
+	$photo = '';
 	$notes = '';
 
 	$emp_comm_medium = [];
@@ -61,15 +62,16 @@
 		$r_city = $emp_data[0]->address[0]->city;
 		$r_state = $emp_data[0]->address[0]->state;
 		$r_zip = ($emp_data[0]->address[0]->zip == 0) ? '' : $emp_data[0]->address[0]->zip;
-		$r_phone = ($emp_data[0]->address[0]->phone == 0) ? '' : $emp_data[0]->address[0]->phone == 0;
+		$r_phone = ($emp_data[0]->address[0]->phone == 0) ? '' : $emp_data[0]->address[0]->phone;
 		$r_fax = ($emp_data[0]->address[0]->fax == 0) ? '' : $emp_data[0]->address[0]->fax;
 		$o_street = $emp_data[0]->address[1]->street;
 		$o_city = $emp_data[0]->address[1]->city;
 		$o_state = $emp_data[0]->address[1]->state;
 		$o_zip = ($emp_data[0]->address[1]->zip == 0) ? '' : $emp_data[0]->address[1]->zip ;
-		$o_phone = ($emp_data[0]->address[1]->phone == 0) ? '' : $emp_data[0]->address[1]->phone == 0;
+		$o_phone = ($emp_data[0]->address[1]->phone == 0) ? '' : $emp_data[0]->address[1]->phone;
 		$o_fax = ($emp_data[0]->address[1]->fax == 0) ? '' : $emp_data[0]->address[1]->fax;
 		$notes = $emp_data[0]->extra_note;
+		$photo = $emp_data[0]->photo;
 		$emp_comm_medium = explode(" ", $emp_data[0]->comm_id);
 	}
 
@@ -339,6 +341,16 @@
 									{!! Form::file('pic', array('id' => 'pic', 'class' => 'form-control' )) !!}
 								</div>
 							</div>
+
+							@if($photo != null)
+								<div class="form-group">
+									<div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+									</div>
+									<div class="class' => 'col-xs-12 col-sm-8 col-md-8 col-lg-9">
+										{!! Html::image(asset('images/profile_pic' . '/' . $photo) , 'No image found', array( 'width' => 300, 'height' => 300, 'class' => 'user_pic')) !!}
+									</div>									
+								</div>
+							@endif
 							
 							<!-- Extra Notes -->
 							<div class="row form-group">
@@ -382,11 +394,21 @@
 							{!! Form::reset('Reset', ['class' => 'btn btn-danger']) !!}
 
 						</div>
-
 						
 					{!! Form::close() !!}
 				</div>
 			</div>
 		</div>
 	</div>
+@endsection
+
+@section('js-css')
+
+	<style type="text/css">
+		.user_pic
+		{
+			border-radius:20%;
+		}
+	</style>
+
 @endsection

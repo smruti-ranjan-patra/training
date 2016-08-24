@@ -32,6 +32,10 @@ class UserMiddleware
 				{
 					return redirect('dashboard')->with( 'redirect_error', 'You dont have the specified permission' );
 				}
+				else
+				{
+					return $next($request);
+				}
 			}
 
 			elseif($page == 'view' || $page == 'edit' || $page == 'delete')
@@ -54,7 +58,7 @@ class UserMiddleware
 			}
 			else
 			{
-				return $next($request);				
+				return $next($request);
 			}
 
 		}
