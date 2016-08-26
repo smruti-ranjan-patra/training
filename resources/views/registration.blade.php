@@ -403,12 +403,10 @@
 @endsection
 
 @section('js-css')
-
 	<style type="text/css">
 		.user_pic
 		{
 			border-radius:20%;
 		}
 	</style>
-
 @endsection

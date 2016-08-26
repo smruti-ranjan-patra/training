@@ -42,7 +42,7 @@ class UserMiddleware
 			{
 				if(UserMiddleware::isAllowed($page))
 				{
-					if(Auth::user()->id == $request->id)
+					if(Auth::user()->id == $request->id || Auth::user()->id == 1)
 					{
 						return $next($request);
 					}

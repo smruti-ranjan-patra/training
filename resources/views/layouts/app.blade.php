@@ -16,12 +16,18 @@
 	<link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 
 	<style>
-		body {
+		body
+		{
 			font-family: 'Lato';
 		}
-
-		.fa-btn {
+		.fa-btn
+		{
 			margin-right: 6px;
+		}
+		#nav_profile_icon
+		{
+			margin-top: 5px;
+			border: 1px solid white;
 		}
 	</style>
 
@@ -75,17 +81,10 @@
 
 	@yield('content')
 
-	<!-- JavaScripts -->
-	@yield('js-css')
+	
+
 	<!-- jQuery -->
 	<script src="//code.jquery.com/jquery.js"></script>
-	<style type="text/css">
-		#nav_profile_icon
-		{
-			margin-top: 5px;
-			border: 1px solid white;
-		}
-	</style>
 	<script>
 		var appUrl = "{{ URL('/') }}" + '/';
 		var pic_link = "{{ asset('images/profile_pic') . '/'}}";
@@ -99,5 +98,8 @@
 			}
 		});
 	</script>
+
+	<!-- JavaScripts -->
+	@yield('js-css')
 </body>
 </html>

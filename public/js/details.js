@@ -19,6 +19,20 @@ $(function()
 		order: [],
 	});
 
+	// Click event for Tweets
+	$(document).on('click', '.full_name', function()
+	{
+		$("select").val("1");
+		user_id = $(this).attr('data_userid');
+		get_tweets(user_id);
+	});
+
+	$(document).on('change', '#select_tweet_num', function()
+	{
+		var num = $(this).val();
+		get_tweets(user_id, num);
+	});
+
 	$(document).on('click', '.view_details', function()
 	{
 		var id = $(this).attr('user_id');
@@ -30,30 +44,17 @@ $(function()
 
 			success:function(response)
 			{
-				$("#profile_pic").html('<div style="text-align: center"><img src="' + pic_link + response.photo + '" alt="No image found" style="border-radius:20%;width:120px;height:120px;"></div>');
-				$("#name").html(response.full_name);
-				$("#employment").html(response.employment);
-				$("#employer").html(response.employer);
-				$("#res_add").html(response.res_add);
-				$("#off_add").html(response.off_add);
-				$("#comm_medium").html(response.comm_medium);
+				$("#myModal #profile_pic").html('<div style="text-align: center"><img src="' + pic_link + response.photo + '" alt="No image found" style="border-radius:20%;width:120px;height:120px;"></div>');
+				$("#myModal #name").html(response.full_name);
+				$("#myModal #employment").html(response.employment);
+				$("#myModal #employer").html(response.employer);
+				$("#myModal #res_add").html(response.res_add);
+				$("#myModal #off_add").html(response.off_add);
+				$("#myModal #comm_medium").html(response.comm_medium);
 				$("#myModal").modal({backdrop: 'static', keyboard: false, show: true});
 			}
 		});
-	});
-	$(document).on('change', '#select_tweet_num', function()
-	{
-		var num = $(this).val();
-		get_tweets(user_id, num);
-	});
-
-	// Click event for Tweets
-	$(document).on('click', '.full_name', function()
-	{
-		$("select").val("1");
-		user_id = $(this).attr('data_userid');
-		get_tweets(user_id);
-	});
+	});	
 
 	/**
 	 * To display the tweets
@@ -67,10 +68,10 @@ $(function()
 	function get_tweets(id, num_tweets = 1)
 	{
 		var tweets_display = '';
-		$('#tweet_selector').hide();
+		$('#twitter_modal #tweet_selector').hide();
 		tweets_display = '<div style="text-align: center"><img src="././images/loading.gif" style="width:80px;height:80px;"></div>';
-		$('.modal-body').html(tweets_display);
-		$('.modal-title').html('Loading...');
+		$('#twitter_modal .modal-body').html(tweets_display);
+		$('#twitter_modal .modal-title').html('Loading...');
 		$("#twitter_modal").modal({backdrop: 'static', keyboard: false, show: true});
 
 		$.ajax(
@@ -87,15 +88,15 @@ $(function()
 			{
 				if(tweet_data.err_val === 1 || tweet_data.err_val === 2)
 				{
-					$('.modal-title').html('Oops !!!');
-					$('#tweet_selector').hide();
-					$('.modal-body').html(tweet_data.err_msg);
+					$('#twitter_modal .modal-title').html('Oops !!!');
+					$('#twitter_modal #tweet_selector').hide();
+					$('#twitter_modal .modal-body').html(tweet_data.err_msg);
 				}
 				else
 				{
-					$('#tweet_selector').show();
+					$('#twitter_modal #tweet_selector').show();
 					var user = 'Tweets of ' + tweet_data.user_name;
-					$('.modal-title').html(user);
+					$('#twitter_modal .modal-title').html(user);
 					var tweet_body = '';
 					tweet_body += '<div style="text-align: center"><img src="' + tweet_data.image + '" style="border-radius:20%;width:100px;height:100px;"></div>';
 
@@ -105,7 +106,7 @@ $(function()
 					}
 
 					tweets_display = tweet_body;
-					$('.modal-body').html(tweets_display);
+					$('#twitter_modal .modal-body').html(tweets_display);
 				}
 			}
 		});

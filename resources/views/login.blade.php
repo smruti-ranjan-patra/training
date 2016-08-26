@@ -80,10 +80,6 @@
 @endsection
 
 @section('js-css')
-
-	<!-- jQuery -->
-	<script src="//code.jquery.com/jquery.js"></script>
 	<!-- Social media button -->
 	<script src="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"></script>
-
 @endsection
