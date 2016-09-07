@@ -1,0 +1,11 @@
+// @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+/* SCSS2 */
+$blue: #3bbfcb;
+$margin: 16px;
+
+.border {
+	padding: $margin / 2; 
+	margin: $margin / 2; 
+	border-color: $blue;
+}
