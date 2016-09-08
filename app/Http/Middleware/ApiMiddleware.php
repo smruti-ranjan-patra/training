@@ -7,6 +7,13 @@ use Validator;
 use Auth;
 use App\Models\User;
 
+/** 
+ * ApiMiddleware
+ * Handles authentication and authorization of users for API
+ * 
+ * @category Middleware
+ * @author Smruti Ranjan
+ */
 class ApiMiddleware
 {
 	/**

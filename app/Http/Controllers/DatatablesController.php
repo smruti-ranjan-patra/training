@@ -11,6 +11,13 @@ use Session;
 use Auth;
 use App\Models\RoleResourcePermission;
 
+/** 
+ * DatatablesController
+ * Handles Datatables
+ * 
+ * @category Controller
+ * @author Smruti Ranjan
+ */
 class DatatablesController extends Controller
 {
 	/**

@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Auth;
 
+/** 
+ * DashBoardController
+ * Handles Dashboard of users
+ * 
+ * @category Controller
+ * @author Smruti Ranjan
+ */
 class DashBoardController extends Controller
 {
 	/**

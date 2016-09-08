@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/** 
+ * Role
+ * Handles role table
+ * 
+ * @category Model
+ * @author Smruti Ranjan
+ */
 class Role extends Model
 {
 	// The table associated with this model.

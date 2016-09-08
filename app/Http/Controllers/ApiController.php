@@ -12,6 +12,13 @@ use Validator;
 use Auth;
 use Log;
 
+/** 
+ * ApiController
+ * Handles API of users
+ * 
+ * @category Controller
+ * @author Smruti Ranjan
+ */
 class ApiController extends Controller
 {
 	/**

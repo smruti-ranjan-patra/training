@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/** 
+ * RoleResourcePermission
+ * Handles role_resource_permission table
+ * 
+ * @category Model
+ * @author Smruti Ranjan
+ */
 class RoleResourcePermission extends Model
 {
 	// The table associated with this model.

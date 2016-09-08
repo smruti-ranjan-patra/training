@@ -9,6 +9,13 @@ use App\Models\Resource;
 use App\Models\Permission;
 use App\Models\RoleResourcePermission;
 
+/** 
+ * UserMiddleware
+ * Handles authentication and authorization of users for Profile app
+ * 
+ * @category Middleware
+ * @author Smruti Ranjan
+ */
 class UserMiddleware
 {
 	/**

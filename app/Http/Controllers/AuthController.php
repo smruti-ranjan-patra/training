@@ -17,6 +17,13 @@ use Hash;
 use Log;
 use Socialite;
 
+/** 
+ * AuthController
+ * Handles authentication of users
+ * 
+ * @category Controller
+ * @author Smruti Ranjan
+ */
 class AuthController extends Controller
 {
 	public $comm_array = ['1','2','3','4'];

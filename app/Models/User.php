@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Hash;
 use Log;
 
+/** 
+ * User
+ * Handles users table
+ * 
+ * @category Model
+ * @author Smruti Ranjan
+ */
 class User extends Model
 {
 	/**

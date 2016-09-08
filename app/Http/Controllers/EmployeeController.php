@@ -10,6 +10,13 @@ use Auth;
 use Twitter;
 use Log;
 
+/** 
+ * EmployeeController
+ * Handles view, edit and delete of users
+ * 
+ * @category Controller
+ * @author Smruti Ranjan
+ */
 class EmployeeController extends Controller
 {
 	/**
