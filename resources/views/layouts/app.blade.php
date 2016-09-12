@@ -88,8 +88,21 @@
 		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-		ga('create', 'UA-83853347-1', {'cookieDomain': 'none'});
+		// ga('create', 'UA-83853347-1', {'cookieDomain': 'none'});
+		ga('create', 'UA-83853347-1', {'cookieDomain': 'none', 'cookieExpires': 0});
 		ga('send', 'pageview');
+
+		// console.log(ga.q);
+		// ga(function()
+		// {
+		// 	// Logs an array of all tracker objects.
+		// 	console.log(ga.getAll());
+		// });
+		
+		ga(function(tracker) {
+			console.log(tracker.get('clientId'));
+		}); 
+		
 	</script>
 
 	<!-- jQuery -->
