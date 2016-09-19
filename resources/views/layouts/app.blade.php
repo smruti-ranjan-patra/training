@@ -90,6 +90,11 @@
 
 		// ga('create', 'UA-83853347-1', {'cookieDomain': 'none'});
 		ga('create', 'UA-83853347-1', {'cookieDomain': 'none', 'cookieExpires': 0});
+		ga('set', 'userId', '1234'); // Set the user ID using signed-in user_id.
+
+		var dimensionValue = 'dimension1';
+		ga('set', 'dimension1', dimensionValue);
+
 		ga('send', 'pageview');
 
 		// console.log(ga.q);
@@ -101,6 +106,8 @@
 		
 		ga(function(tracker) {
 			console.log(tracker.get('clientId'));
+			console.log(tracker.get('userId'));
+			console.log(tracker.get('dimension1'));
 		}); 
 		
 	</script>
