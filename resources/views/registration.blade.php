@@ -97,7 +97,10 @@
 
 						<!-- Names -->
 						<div class="row form-group">
-							{!! Form::label('first_name', 'First name :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label">
+								<label for="first_name">First Name : </label>
+								<span class="text-danger">*</span>
+							</div>
 
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
 								{!! Form::text('first_name', $first_name, array('id' => 'first_name', 'value' => old('first_name'), 'class' => 'form-control' )) !!}
@@ -105,7 +108,7 @@
 						</div>
 
 						<div class="row form-group">
-							{!! Form::label('middle_name', 'Middle name :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							{!! Form::label('middle_name', 'Middle name :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 has-error control-label')) !!}
 
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
 								{!! Form::text('middle_name', $middle_name, array('id' => 'middle_name', 'value' => old('middle_name'), 'class' => 'form-control' )) !!}
@@ -122,7 +125,10 @@
 
 						<!-- Email -->
 						<div class="row form-group">
-							{!! Form::label('email', 'Email ID :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label">
+								<label for="email">Email ID : </label>
+								<span class="text-danger">*</span>
+							</div>
 
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
 								{!! Form::email('email', $email, array('id' => 'email', 'value' => old('email'), 'placeholder' => 'example@abc.com', 'class' => 'form-control' )) !!}
@@ -131,7 +137,10 @@
 
 						<!-- Password -->
 						<div class="row form-group">
-							{!! Form::label('password', 'Password :', array('class' => 'col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label')) !!}
+							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 control-label">
+								<label for="password">Password : </label>
+								<span class="text-danger">*</span>
+							</div>
 
 							<div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
 								{!! Form::password('password', array('id' => 'password', 'value' => old('password'), 'placeholder' => '*********', 'class' => 'form-control' )) !!}
